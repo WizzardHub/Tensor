@@ -12,6 +12,7 @@ public class AutoClickerB extends SwingCheck {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker B")
                 .withSize(2)
+                .clearSamplesWhenFull()
                 .build());
     }
 
