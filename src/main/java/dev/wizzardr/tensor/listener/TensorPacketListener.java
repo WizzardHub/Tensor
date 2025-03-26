@@ -13,6 +13,7 @@ import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.data.PlayerDataManager;
 import dev.wizzardr.tensor.util.BlockUtil;
+import dev.wizzardr.tensor.util.PacketCollection;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,11 +33,7 @@ public class TensorPacketListener implements PacketListener {
         if (playerData == null)
             return;
 
-        if (event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION
-                || event.getPacketType() == PacketType.Play.Client.PLAYER_POSITION_AND_ROTATION
-                || event.getPacketType() == PacketType.Play.Client.PLAYER_ROTATION
-                || event.getPacketType() == PacketType.Play.Client.PLAYER_FLYING)
-        {
+        if (PacketCollection.MOVEMENT_PACKETS.contains(event.getPacketType())) {
             playerData.handleTick();
         }
 
@@ -65,6 +62,7 @@ public class TensorPacketListener implements PacketListener {
                 case RELEASE_USE_ITEM:
                     playerData.ignoreNextClick = true;
                     break;
+
                 case START_DIGGING:
                     Vector3i blockPosition = packet.getBlockPosition();
                     Block block = player.getWorld().getBlockAt(blockPosition.getX(), blockPosition.getY(), blockPosition.getZ());
@@ -72,11 +70,13 @@ public class TensorPacketListener implements PacketListener {
                     if (!block.getType().isSolid()) {
                         playerData.breakTicks = 3;
                     }
+
                     break;
                 case FINISHED_DIGGING:
                     playerData.breakTicks = 0;
                     playerData.breaking = false;
                     break;
+
                 case CANCELLED_DIGGING:
                     playerData.breaking = false;
                     break;
