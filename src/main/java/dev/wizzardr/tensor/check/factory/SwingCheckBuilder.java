@@ -36,18 +36,18 @@ public class SwingCheckBuilder {
         return this;
     }
 
-    public SwingCheckBuilder clearSamplesWhenFull(boolean clearSamples) {
-        this.clearSample = clearSamples;
+    public SwingCheckBuilder clearSamplesWhenFull() {
+        this.clearSample = true;
         return this;
     }
 
-    public SwingCheckBuilder includeDoubleClicks(boolean includeDoubleClicks) {
-        this.includeDoubleClicks = includeDoubleClicks;
+    public SwingCheckBuilder excludeDoubleClicks() {
+        this.includeDoubleClicks = false;
         return this;
     }
 
-    public SwingCheckBuilder markAsExperimental(boolean experimental) {
-        this.experimental = experimental;
+    public SwingCheckBuilder markAsExperimental() {
+        this.experimental = true;
         return this;
     }
 
