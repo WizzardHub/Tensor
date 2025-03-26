@@ -11,9 +11,10 @@ public class AutoClickerA extends SwingCheck {
 
     public AutoClickerA(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
-                        .withName("Auto Clicker A")
-                        .withSize(20)
-                        .build());
+                .withName("Auto Clicker A")
+                .withSize(20)
+                .clearSamplesWhenFull()
+                .build());
     }
 
     @Override
