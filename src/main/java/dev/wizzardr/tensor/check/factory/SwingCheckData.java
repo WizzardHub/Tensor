@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor.check.factory;
+package dev.wizzardr.tensor.check.factory;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

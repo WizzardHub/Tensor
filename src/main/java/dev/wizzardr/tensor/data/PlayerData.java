@@ -1,22 +1,25 @@
-package dev.wizzardr.Tensor.data;
+package dev.wizzardr.tensor.data;
 
-import dev.wizzardr.Tensor.check.CheckData;
+import dev.wizzardr.tensor.check.CheckData;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.UUID;
 
 public class PlayerData {
 
-    private final Player player;
+    public final Player player;
+    protected final UUID uuid;
     private final CheckData checkData = new CheckData();
-    private final boolean alerts, debugs;
+    private boolean alerts, debugs;
 
-    public PlayerData(final Player player) {
-        this.player = player;
-        this.alerts = player.hasPermission("tensor.alerts");
+    public PlayerData(final UUID uuid) {
+        this.uuid = uuid;
+        this.player = Bukkit.getPlayer(uuid);
         this.debugs = player.hasPermission("tensor.debugs");
+        this.alerts = player.hasPermission("tensor.alerts");
         checkData.register(this);
     }
 
@@ -34,11 +37,16 @@ public class PlayerData {
 
             checkData.getSwingChecks().forEach(c -> c.handle(tickDelay));
         }
+        tick = 0;
     }
 
     public void handleTick() {
         tick++;
         breakTicks++;
         ignoreNextClick = false;
+    }
+
+    public boolean isBreaking() {
+        return breaking || breakTicks <= 5;
     }
 }

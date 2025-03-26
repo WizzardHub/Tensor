@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor.util;
+package dev.wizzardr.tensor.util;
 
 import java.util.ArrayDeque;
 import java.util.stream.Collectors;

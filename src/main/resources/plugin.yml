@@ -2,4 +2,4 @@ name: Tensor
 version: 1.0
 author: Wizzard
 description: Tensor is a lightweight yet powerful anti-cheat plugin that uses advanced statistics to detect auto-clickers with exceptional accuracy and stability.
-main: dev.wizzardr.Tensor
+main: dev.wizzardr.tensor.Tensor

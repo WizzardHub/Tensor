@@ -1,16 +1,18 @@
-package dev.wizzardr.Tensor.check.factory;
+package dev.wizzardr.tensor.check.factory;
 
-import dev.wizzardr.Tensor.TensorAPI;
-import dev.wizzardr.Tensor.data.PlayerData;
-import dev.wizzardr.Tensor.math.Statistics;
-import dev.wizzardr.Tensor.util.DequeUtil;
+import dev.wizzardr.tensor.TensorAPI;
+import dev.wizzardr.tensor.data.PlayerData;
+import dev.wizzardr.tensor.math.Statistics;
+import dev.wizzardr.tensor.util.DequeUtil;
 import lombok.Getter;
+import org.atteo.classindex.IndexSubclasses;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayDeque;
 
 import java.lang.String;
 
+@IndexSubclasses
 public abstract class SwingCheck {
 
     protected final PlayerData playerData;

@@ -1,10 +1,11 @@
-package dev.wizzardr.Tensor.check;
+package dev.wizzardr.tensor.check;
 
 
-import dev.wizzardr.Tensor.TensorAPI;
-import dev.wizzardr.Tensor.check.factory.SwingCheck;
-import dev.wizzardr.Tensor.data.PlayerData;
+import dev.wizzardr.tensor.TensorAPI;
+import dev.wizzardr.tensor.check.factory.SwingCheck;
+import dev.wizzardr.tensor.data.PlayerData;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor.listener;
+package dev.wizzardr.tensor.listener;
 
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
@@ -7,10 +7,13 @@ import com.github.retrooper.packetevents.event.UserDisconnectEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.util.Vector3i;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientInteractEntity;
 import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientPlayerDigging;
-import dev.wizzardr.Tensor.TensorAPI;
-import dev.wizzardr.Tensor.data.PlayerData;
-import dev.wizzardr.Tensor.data.PlayerDataManager;
+import dev.wizzardr.tensor.TensorAPI;
+import dev.wizzardr.tensor.data.PlayerData;
+import dev.wizzardr.tensor.data.PlayerDataManager;
+import dev.wizzardr.tensor.util.BlockUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -24,7 +27,7 @@ public class TensorPacketListener implements PacketListener {
         Player player = event.getPlayer();
         PlayerDataManager playerDataManager = TensorAPI.INSTANCE.getPlayerDataManager();
 
-        PlayerData playerData = playerDataManager.getPlayerData(player);
+        PlayerData playerData = playerDataManager.getPlayerData(event.getUser().getUUID());
 
         if (playerData == null)
             return;
@@ -35,6 +38,23 @@ public class TensorPacketListener implements PacketListener {
                 || event.getPacketType() == PacketType.Play.Client.PLAYER_FLYING)
         {
             playerData.handleTick();
+        }
+
+        if (event.getPacketType() == PacketType.Play.Client.ANIMATION) {
+            if (!playerData.isBreaking()) {
+                if (!BlockUtil.hasTargetedBlock(player)) {
+                    playerData.handleClick(playerData.tick);
+                }
+            }
+        }
+
+        if (event.getPacketType() == PacketType.Play.Client.INTERACT_ENTITY) {
+            WrapperPlayClientInteractEntity packet = new WrapperPlayClientInteractEntity(event);
+            if (packet.getAction() == WrapperPlayClientInteractEntity.InteractAction.ATTACK) {
+                if (BlockUtil.hasTargetedBlock(player)) {
+                    playerData.handleClick(playerData.tick);
+                }
+            }
         }
 
         if (event.getPacketType() == PacketType.Play.Client.PLAYER_DIGGING) {
@@ -62,17 +82,5 @@ public class TensorPacketListener implements PacketListener {
                     break;
             }
         }
-    }
-
-    @Override
-    public void onUserConnect(UserConnectEvent event) {
-        Player player = (Player) event.getUser();
-        TensorAPI.INSTANCE.getPlayerDataManager().add(player);
-    }
-
-    @Override
-    public void onUserDisconnect(UserDisconnectEvent event) {
-        Player player = (Player) event.getUser();
-        TensorAPI.INSTANCE.getPlayerDataManager().remove(player);
     }
 }

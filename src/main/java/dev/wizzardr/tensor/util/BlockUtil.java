@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor.util;
+package dev.wizzardr.tensor.util;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;

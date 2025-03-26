@@ -1,10 +1,11 @@
-package dev.wizzardr.Tensor;
+package dev.wizzardr.tensor;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import dev.wizzardr.Tensor.check.CheckManager;
-import dev.wizzardr.Tensor.data.PlayerDataManager;
-import dev.wizzardr.Tensor.listener.TensorPacketListener;
+import dev.wizzardr.tensor.check.CheckManager;
+import dev.wizzardr.tensor.data.PlayerDataManager;
+import dev.wizzardr.tensor.listener.PlayerListener;
+import dev.wizzardr.tensor.listener.TensorPacketListener;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,9 +40,11 @@ public enum TensorAPI {
 
         /* Add back players if reload */
         plugin.getServer().getOnlinePlayers().forEach(player -> {
-            if (!playerDataManager.has(player)) {
-                playerDataManager.add(player);
+            if (!playerDataManager.has(player.getUniqueId())) {
+                playerDataManager.add(player.getUniqueId());
             }
         });
+
+        plugin.getServer().getPluginManager().registerEvents(new PlayerListener(), plugin);
     }
 }

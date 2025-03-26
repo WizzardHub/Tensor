@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor;
+package dev.wizzardr.tensor;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;

@@ -1,9 +1,9 @@
-package dev.wizzardr.Tensor.check.checks;
+package dev.wizzardr.tensor.check.checks;
 
-import dev.wizzardr.Tensor.check.factory.SwingCheck;
-import dev.wizzardr.Tensor.check.factory.SwingCheckBuilder;
-import dev.wizzardr.Tensor.data.PlayerData;
-import dev.wizzardr.Tensor.math.Statistics;
+import dev.wizzardr.tensor.check.factory.SwingCheck;
+import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
+import dev.wizzardr.tensor.data.PlayerData;
+import dev.wizzardr.tensor.math.Statistics;
 
 import java.util.ArrayDeque;
 

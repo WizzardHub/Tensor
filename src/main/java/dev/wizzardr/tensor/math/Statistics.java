@@ -1,4 +1,4 @@
-package dev.wizzardr.Tensor.math;
+package dev.wizzardr.tensor.math;
 
 import lombok.experimental.UtilityClass;
 import java.util.ArrayDeque;
