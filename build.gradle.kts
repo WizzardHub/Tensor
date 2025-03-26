@@ -1,0 +1,84 @@
+plugins {
+    id("java")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+group = "dev.wizzardr"
+version = "1.0-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "spigot-repo"
+        url = uri("https://nexus.funkemunky.cc/content/repositories/releases/")
+    }
+    maven {
+        name = "codemc-releases"
+        url = uri("https://repo.codemc.io/repository/maven-releases/")
+    }
+}
+
+dependencies {
+    // Spigot
+    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1")
+
+    // Class Index
+    implementation("org.atteo.classindex:classindex:3.9")
+    annotationProcessor("org.atteo.classindex:classindex:3.9")
+
+    // PacketEvents 2.0
+    implementation("com.github.retrooper:packetevents-spigot:2.7.0")
+
+    // Lombok
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.shadowJar {
+    // Relocate PacketEvents to avoid conflicts
+    relocate("io.github.retrooper.packetevents", "${project.group}.shade.packetevents")
+    relocate("com.github.retrooper.packetevents", "${project.group}.shade.packetevents")
+
+    // Configure the output JAR
+    archiveFileName.set("${project.name}-${project.version}.jar")
+    mergeServiceFiles()
+
+    // Exclude unnecessary files
+    minimize()
+
+    var property = System.getProperty("hotswap")
+
+    if (project.hasProperty("hotswap") && property == null) {
+        System.setProperty("hotswap", "true")
+        property = "true"
+    }
+
+    if (property != null && property.equals("true")) {
+        project.properties.remove("hotswap")
+        return@shadowJar
+    }
+
+    if (project.hasProperty("destinationDir")) {
+        val destinationDirValue = project.property("destinationDir")?.toString()
+        destinationDirectory.set(destinationDirValue?.let { file(it) })
+    }
+}
+
+// Make the shadowJar task run when building the project
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
+
+// Set shadowJar as the default artifact
+artifacts {
+    archives(tasks.shadowJar)
+}
