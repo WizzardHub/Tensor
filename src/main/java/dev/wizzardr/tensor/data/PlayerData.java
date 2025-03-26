@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    public final Player player;
+    @Getter public final Player player;
     protected final UUID uuid;
     private final CheckData checkData = new CheckData();
     private boolean alerts, debugs;

@@ -22,6 +22,6 @@ public class AutoClickerA extends SwingCheck {
         double cps = getCps();
         double stDev = Statistics.getStDev(samples);
 
-        debug(String.format("cps: %.2f stDev: %.2f", cps, stDev));
+        // debug(String.format("cps: %.2f stDev: %.2f", cps, stDev));
     }
 }
