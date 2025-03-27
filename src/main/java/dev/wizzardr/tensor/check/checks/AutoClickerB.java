@@ -1,5 +1,6 @@
 package dev.wizzardr.tensor.check.checks;
 
+import dev.wizzardr.tensor.check.base.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
 import dev.wizzardr.tensor.data.PlayerData;
@@ -28,7 +29,9 @@ public class AutoClickerB extends SwingCheck {
 
         if (cps > 16) {
             if (threshold() > 3.0) {
-                alert(String.format("cps: %.2f threshold: %.2f", cps, this.threshold));
+                alert(new DebugContainer.Builder("cps: %.2f, threshold: %.2f")
+                        .withValues(cps, this.threshold)
+                        .build());
             }
         } else {
             threshold(-0.5);

@@ -2,6 +2,8 @@ package dev.wizzardr.tensor.check.factory;
 
 import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
+import dev.wizzardr.tensor.check.base.DebugContainer;
+import dev.wizzardr.tensor.check.violation.ViolationManager;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.math.Statistics;
 import dev.wizzardr.tensor.util.DequeUtil;
@@ -16,9 +18,9 @@ import java.lang.String;
 @IndexSubclasses
 public abstract class SwingCheck {
 
-    protected final PlayerData playerData;
+    @Getter protected final PlayerData playerData;
 
-    protected String name;
+    @Getter protected String name;
     protected double vl = -1.0;
     protected double minVl;
     protected double threshold;
@@ -59,18 +61,12 @@ public abstract class SwingCheck {
         lastTickDelay = tickDelay;
     }
 
-    protected void alert(String data) {
-
-        // todo : hover with data
-        // todo : use a dictionary for data or make a class
+    protected void alert(DebugContainer data) {
         if (++vl <= 0)
             return;
 
-        TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers()
-                .stream().filter(p -> p.hasPermission("tensor.alerts"))
-                .forEach(p -> p.sendMessage(Tensor.PREFIX +
-                        String.format("%s%s%s used %s%s %s(%.2f)", ChatColor.GRAY, this.playerData.getPlayer().getName(),
-                                ChatColor.WHITE, ChatColor.BLUE, this.name, ChatColor.GRAY, this.vl)));
+        ViolationManager violationManager = TensorAPI.INSTANCE.getViolationManager();
+        violationManager.handleViolation(this, data);
     }
 
     protected void debug(String data) {
