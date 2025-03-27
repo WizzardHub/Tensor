@@ -44,10 +44,10 @@ public class Statistics {
     public <T extends Number> int[] getDistribution(ArrayDeque<T> data) {
 
         int size = data.size();
-        int[] counter = new int[size + 1];
+        int[] counter = new int[size];
 
         for (Number i : data) {
-            if (i.intValue() < size + 1)
+            if (i.intValue() < size)
                 counter[i.intValue()]++;
         }
 
