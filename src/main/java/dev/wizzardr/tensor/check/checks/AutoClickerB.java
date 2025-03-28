@@ -4,6 +4,7 @@ import dev.wizzardr.tensor.check.base.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
 import dev.wizzardr.tensor.data.PlayerData;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayDeque;
 
@@ -29,8 +30,9 @@ public class AutoClickerB extends SwingCheck {
 
         if (cps > 16) {
             if (threshold() > 3.0) {
-                alert(new DebugContainer.Builder("cps: %.2f, threshold: %.2f")
-                        .withValues(cps, this.threshold)
+                alert(DebugContainer.builder()
+                        .formatString("cps: %.2f, threshold: %.2f")
+                        .values(cps, threshold)
                         .build());
             }
         } else {
@@ -39,4 +41,3 @@ public class AutoClickerB extends SwingCheck {
         }
     }
 }
-

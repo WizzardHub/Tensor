@@ -37,11 +37,10 @@ public class ViolationManager {
             TextComponent mainComponent = new TextComponent(String.format(VIOLATION_ALERT_FORMAT,
                     ChatColor.GRAY, check.getPlayerData().getPlayer().getName(), ChatColor.WHITE, ChatColor.GRAY, ++vl));
 
-            TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n%s", ChatColor.BLUE, checkName, checkInfo));
-            hoverComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));
+            TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n\n%s", ChatColor.BLUE, checkName, checkInfo));
+            mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));
 
             ComponentBuilder builder = new ComponentBuilder(mainComponent);
-            builder.append(hoverComponent);
 
             TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers()
                     .stream().filter(p -> p.hasPermission("tensor.alerts"))
