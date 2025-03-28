@@ -1,4 +1,4 @@
-package dev.wizzardr.tensor.util;
+package dev.wizzardr.tensor.util.packet;
 
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
