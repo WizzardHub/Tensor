@@ -9,7 +9,7 @@ Tensor is a Java-based anti-cheat plugin that uses statistics to detect auto-cli
 ### Commands
 
 * [ ] Implement Replay <file/folder>
-* [ x Implement Debug
+* [x] Implement Debug
 * [x] Implement Alerts
 * [ ] Implement Record <player>
 
