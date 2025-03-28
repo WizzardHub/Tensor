@@ -9,14 +9,14 @@ Tensor is a Java-based anti-cheat plugin that uses statistics to detect auto-cli
 ### Commands
 
 * [ ] Implement Replay <file/folder>
-* [ ] Implement Debug
-* [ ] Implement Alerts
+* [x] Implement Debug
+* [x] Implement Alerts
 * [ ] Implement Record <player>
 
 ### Core Features
 
 * [ ] Test the right click filter in real case scenarios
-* [ ] Add complementary formulas to Statistics
+* [x] Add complementary formulas to Statistics
 * [ ] Add autoclicker checks
 * [ ] Provide a downloadable dataset of pre-recorded clicks
 * [ ] Complete README with detailed info about the checks, a showcase and some things I learned about detections

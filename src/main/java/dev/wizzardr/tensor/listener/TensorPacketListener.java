@@ -2,8 +2,6 @@ package dev.wizzardr.tensor.listener;
 
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
-import com.github.retrooper.packetevents.event.UserConnectEvent;
-import com.github.retrooper.packetevents.event.UserDisconnectEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.player.DiggingAction;
 import com.github.retrooper.packetevents.util.Vector3i;
@@ -13,8 +11,7 @@ import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.data.PlayerDataManager;
 import dev.wizzardr.tensor.util.BlockUtil;
-import dev.wizzardr.tensor.util.PacketCollection;
-import org.bukkit.Bukkit;
+import dev.wizzardr.tensor.util.packet.PacketCollection;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
