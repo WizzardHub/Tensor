@@ -13,14 +13,9 @@ java {
 
 repositories {
     mavenCentral()
-    maven {
-        name = "spigot-repo"
-        url = uri("https://nexus.funkemunky.cc/content/repositories/releases/")
-    }
-    maven {
-        name = "codemc-releases"
-        url = uri("https://repo.codemc.io/repository/maven-releases/")
-    }
+    maven { url = uri("https://nexus.funkemunky.cc/content/repositories/releases/") }
+    maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
+    maven { url = uri("https://repo.aikar.co/content/groups/aikar/") }
 }
 
 dependencies {
@@ -37,6 +32,9 @@ dependencies {
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
+
+    // ACF
+    implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 }
 
 tasks.withType<JavaCompile> {
@@ -47,6 +45,10 @@ tasks.shadowJar {
     // Relocate PacketEvents to avoid conflicts
     relocate("io.github.retrooper.packetevents", "${project.group}.shade.packetevents")
     relocate("com.github.retrooper.packetevents", "${project.group}.shade.packetevents")
+
+    // Relocate ACF
+    relocate("co.aikar.commands", "${project.group}.acf")
+    relocate("co.aikar.locales", "${project.group}.locales")
 
     // Configure the output JAR
     archiveFileName.set("${project.name}-${project.version}.jar")
