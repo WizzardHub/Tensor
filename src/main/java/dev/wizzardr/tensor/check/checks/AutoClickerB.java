@@ -32,15 +32,11 @@ public class AutoClickerB extends SwingCheck {
                 .values(cps, threshold)
                 .build();
 
-        debug(data);
-
-        if (cps > 16) {
-            if (threshold() > 3.0) {
-                alert(data);
-            }
-        } else {
-            threshold(-0.5);
-            decreaseVl(0.1);
+        // Balance 0.75 = 15cps which is the decay
+        if (threshold((cps / 20.0) - 0.75) > 0.15) {
+            alert(data);
         }
+
+        debug(data);
     }
 }
