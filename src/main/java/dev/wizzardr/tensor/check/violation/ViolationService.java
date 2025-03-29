@@ -5,6 +5,7 @@ import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
+import dev.wizzardr.tensor.data.PlayerData;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -34,11 +35,13 @@ public class ViolationService {
             String checkInfo = data.getFormattedOutput();
             String checkName = check.getName();
 
+            PlayerData playerData = check.getPlayerData();
+
             if (check.isExperimental())
                 checkName += "*";
 
             TextComponent mainComponent = new TextComponent(String.format(VIOLATION_ALERT_FORMAT,
-                    check.getPlayerData().getPlayer().getName(), ChatColor.WHITE, ChatColor.RED, ++vl));
+                    playerData.getPlayer().getName(), ChatColor.WHITE, ChatColor.RED, ++playerData.vl));
 
             TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n\n%s", ChatColor.BLUE, checkName, checkInfo));
             mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));

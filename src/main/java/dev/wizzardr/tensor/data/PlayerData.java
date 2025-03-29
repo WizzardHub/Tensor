@@ -31,6 +31,8 @@ public class PlayerData {
     public int tick, breakTicks, releaseItemTicks;
     public boolean breaking;
 
+    public int vl;
+
     public void handleClick(int tickDelay) {
         tick = 0;
 
