@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ViolationManager {
+public class ViolationService {
 
     private static final String VIOLATION_ALERT_FORMAT = Tensor.PREFIX + "%s%s%s is clicking suspiciously %sx%.0f";
 

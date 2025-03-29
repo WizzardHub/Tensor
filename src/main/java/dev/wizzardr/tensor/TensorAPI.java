@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.wizzardr.tensor.check.CheckManager;
-import dev.wizzardr.tensor.check.violation.ViolationManager;
+import dev.wizzardr.tensor.check.violation.ViolationService;
 import dev.wizzardr.tensor.command.TensorCommand;
 import dev.wizzardr.tensor.data.PlayerDataManager;
 import dev.wizzardr.tensor.listener.PlayerListener;
@@ -18,7 +18,7 @@ public enum TensorAPI {
     INSTANCE;
 
     private JavaPlugin plugin;
-    private final ViolationManager violationManager = new ViolationManager();
+    private final ViolationService violationService = new ViolationService();
     private final PlayerDataManager playerDataManager = new PlayerDataManager();
     private final CheckManager checkManager = new CheckManager();
 

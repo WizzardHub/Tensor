@@ -2,7 +2,7 @@ package dev.wizzardr.tensor.check.factory;
 
 import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.check.data.DebugContainer;
-import dev.wizzardr.tensor.check.violation.ViolationManager;
+import dev.wizzardr.tensor.check.violation.ViolationService;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.math.Statistics;
 import dev.wizzardr.tensor.util.DequeUtil;
@@ -64,8 +64,8 @@ public abstract class SwingCheck {
         if (++vl <= 0)
             return;
 
-        ViolationManager violationManager = TensorAPI.INSTANCE.getViolationManager();
-        violationManager.handleViolation(this, data);
+        ViolationService violationService = TensorAPI.INSTANCE.getViolationService();
+        violationService.handleViolation(this, data);
     }
 
     protected void debug(String data) {
