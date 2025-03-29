@@ -3,7 +3,7 @@ package dev.wizzardr.tensor.check.violation;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
-import dev.wizzardr.tensor.check.base.DebugContainer;
+import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;

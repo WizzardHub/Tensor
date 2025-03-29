@@ -1,15 +1,13 @@
 package dev.wizzardr.tensor.check.factory;
 
-import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
-import dev.wizzardr.tensor.check.base.DebugContainer;
+import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.violation.ViolationManager;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.math.Statistics;
 import dev.wizzardr.tensor.util.DequeUtil;
 import lombok.Getter;
 import org.atteo.classindex.IndexSubclasses;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayDeque;

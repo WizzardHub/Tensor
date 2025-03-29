@@ -1,4 +1,4 @@
-package dev.wizzardr.tensor.check.base;
+package dev.wizzardr.tensor.check.data;
 
 import lombok.Builder;
 import lombok.Getter;
