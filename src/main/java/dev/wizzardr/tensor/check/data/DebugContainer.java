@@ -14,32 +14,47 @@ public class DebugContainer {
     private final List<Object> values;
 
     public String getFormattedOutput() {
+        String[] parts = formatString.split(", ");
+        StringBuilder sb = new StringBuilder();
 
-        try {
-            String[] parts = formatString.split(", ");
-            StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i].trim();
+            int colonIndex = part.indexOf(':');
+            String label = part.substring(0, colonIndex + 1);
 
-            for (int i = 0; i < parts.length; i++) {
-                String part = parts[i].trim();
-                int colonIndex = part.indexOf(':');
-                String label = part.substring(0, colonIndex + 1);
+            sb.append(ChatColor.WHITE)
+                    .append(label)
+                    .append(" ")
+                    .append(formatValue(part.substring(colonIndex + 1).trim(), values.get(i)));
 
-                sb.append(ChatColor.WHITE)
-                        .append(label)
-                        .append(" ")
-                        .append(formatValue(part.substring(colonIndex + 1).trim(), values.get(i)));
-
-                if (i < parts.length - 1) {
-                    sb.append("\n");
-                }
+            if (i < parts.length - 1) {
+                sb.append("\n");
             }
-
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        return "Malformed input";
+        return sb.toString();
+    }
+
+    public String getFormattedOutputSingle() {
+        String[] parts = formatString.split(", ");
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < parts.length; i++) {
+            String part = parts[i].trim();
+            int colonIndex = part.indexOf(':');
+            String label = part.substring(0, colonIndex + 1);
+
+            sb.append(ChatColor.WHITE)
+                    .append(label)
+                    .append(" ")
+                    .append(formatValue(part.substring(colonIndex + 1).trim(), values.get(i)));
+
+            if (i < parts.length - 1) {
+                sb.append(String.format("%s, ", ChatColor.GRAY));
+            }
+        }
+
+        return sb.toString();
     }
 
     private String formatValue(String formatSpec, Object value) {

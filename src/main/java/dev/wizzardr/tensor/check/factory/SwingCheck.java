@@ -68,10 +68,9 @@ public abstract class SwingCheck {
         violationService.handleViolation(this, data);
     }
 
-    protected void debug(String data) {
-        TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers()
-                .stream().filter(p -> p.hasPermission("tensor.debugs"))
-                .forEach(p -> p.sendMessage(ChatColor.RED + String.format("[%s] ", name) + ChatColor.GRAY + data));
+    protected void debug(DebugContainer data) {
+        ViolationService violationService = TensorAPI.INSTANCE.getViolationService();
+        violationService.handleDebug(this, data);
     }
 
     protected double getCps() {

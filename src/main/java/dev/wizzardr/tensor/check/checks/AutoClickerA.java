@@ -1,5 +1,6 @@
 package dev.wizzardr.tensor.check.checks;
 
+import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
 import dev.wizzardr.tensor.data.PlayerData;
@@ -42,11 +43,12 @@ public class AutoClickerA extends SwingCheck {
 
         List<Integer> outlier = Statistics.getOutliers(samples);
 
-        debug(String.format(
-                "cps: %.2f, stDev: %.2f, modifCount: %.2f, average: %.2f, entropy: %.2f, gini: %.2f, " +
+        debug(DebugContainer.builder()
+                .formatString("cps: %.2f, stDev: %.2f, modifCount: %.2f, average: %.2f, entropy: %.2f, gini: %.2f, " +
                         "bds: %.2f, recurrenceRate: %.2f, skewness: %.2f, kurtosis: %.2f, variance: %.2f, " +
-                        "variation: %.2f, distribution: %s, outliers: %s",
-                cps, stDev, modifCount, average, entropy, gini, bds, recurrenceRate,
-                skewness, kurtosis, variance, variation, Arrays.toString(distribution), outlier.toString()));
+                        "variation: %.2f, distribution: %s, outliers: %s")
+                .values(cps, stDev, modifCount, average, entropy, gini, bds, recurrenceRate,
+                        skewness, kurtosis, variance, variation, Arrays.toString(distribution), outlier.toString())
+                .build());
     }
 }

@@ -2,24 +2,27 @@ package dev.wizzardr.tensor.data;
 
 import dev.wizzardr.tensor.check.CheckData;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayDeque;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerData {
 
     @Getter public final Player player;
     protected final UUID uuid;
     private final CheckData checkData = new CheckData();
-    private boolean alerts, debugs;
+    @Getter @Setter private boolean alerts;
+
+    @Getter private final Map<Player, List<String>> debugs = new HashMap<>();
 
     public PlayerData(final UUID uuid) {
         this.uuid = uuid;
         this.player = Bukkit.getPlayer(uuid);
-        this.debugs = player.hasPermission("tensor.debugs");
-        this.alerts = player.hasPermission("tensor.alerts");
+        if (player != null) {
+            this.alerts = player.hasPermission("tensor.alerts");
+        }
         checkData.register(this);
     }
 

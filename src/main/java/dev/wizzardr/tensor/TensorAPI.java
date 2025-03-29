@@ -4,6 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.wizzardr.tensor.check.CheckManager;
+import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.violation.ViolationService;
 import dev.wizzardr.tensor.command.TensorCommand;
 import dev.wizzardr.tensor.data.PlayerDataManager;
@@ -12,6 +13,10 @@ import dev.wizzardr.tensor.listener.TensorPacketListener;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public enum TensorAPI {
@@ -32,7 +37,6 @@ public enum TensorAPI {
 
     public void onEnable(final JavaPlugin plugin) {
         this.plugin = plugin;
-        handleCommandRegistration();
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(plugin));
         PacketEvents.getAPI().getSettings().checkForUpdates(false);
@@ -51,10 +55,17 @@ public enum TensorAPI {
         });
 
         plugin.getServer().getPluginManager().registerEvents(new PlayerListener(), plugin);
+        handleCommandRegistration();
     }
 
     private void handleCommandRegistration() {
         PaperCommandManager manager = new PaperCommandManager(this.plugin);
+
+        manager.getCommandCompletions().registerCompletion("checks", context ->
+                checkManager.getCheckClasses().stream()
+                        .map(Class::getSimpleName)
+                        .collect(Collectors.toSet()));
+
         manager.registerCommand(new TensorCommand());
     }
 }

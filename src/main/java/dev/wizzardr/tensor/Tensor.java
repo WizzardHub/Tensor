@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Tensor extends JavaPlugin {
 
-    public static String PREFIX = ChatColor.BLUE + "[Tensor] " + ChatColor.RESET;
+    public static String PREFIX = ChatColor.BLUE + "[Tensor] " + ChatColor.GRAY;
 
     @Override
     public void onDisable() {

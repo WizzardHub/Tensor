@@ -27,12 +27,16 @@ public class AutoClickerB extends SwingCheck {
     protected void handle(ArrayDeque<Integer> samples) {
         double cps = getCps();
 
+        DebugContainer data = DebugContainer.builder()
+                .formatString("cps: %.2f, threshold: %.2f")
+                .values(cps, threshold)
+                .build();
+
+        debug(data);
+
         if (cps > 16) {
             if (threshold() > 3.0) {
-                alert(DebugContainer.builder()
-                        .formatString("cps: %.2f, threshold: %.2f")
-                        .values(cps, threshold)
-                        .build());
+                alert(data);
             }
         } else {
             threshold(-0.5);
