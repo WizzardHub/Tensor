@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 public class ViolationManager {
 
-    private static final String VIOLATION_ALERT_FORMAT = Tensor.PREFIX + "%s%s%s is clicking suspiciously %s(%.2f)";
+    private static final String VIOLATION_ALERT_FORMAT = Tensor.PREFIX + "%s%s%s is clicking suspiciously %sx%.0f";
 
     private double vl;
 
@@ -35,7 +35,7 @@ public class ViolationManager {
                 checkName += "*";
 
             TextComponent mainComponent = new TextComponent(String.format(VIOLATION_ALERT_FORMAT,
-                    ChatColor.GRAY, check.getPlayerData().getPlayer().getName(), ChatColor.WHITE, ChatColor.GRAY, ++vl));
+                    ChatColor.GRAY, check.getPlayerData().getPlayer().getName(), ChatColor.WHITE, ChatColor.RED, ++vl));
 
             TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n\n%s", ChatColor.BLUE, checkName, checkInfo));
             mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));
