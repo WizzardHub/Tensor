@@ -24,12 +24,19 @@ public class PlayerData {
     }
 
     @Getter private final ArrayDeque<Integer> sample = new ArrayDeque<>();
-    public int tick, breakTicks;
-    public boolean breaking, ignoreNextClick;
+
+    public int tick, breakTicks, releaseItemTicks;
+    public boolean breaking;
 
     public void handleClick(int tickDelay) {
+        tick = 0;
 
-        if (ignoreNextClick) {
+        /*
+        * ignoring the next click delay after using an item,
+        * this improves accuracy by ignoring "noise"
+        * usually done with block hitting
+        */
+        if (releaseItemTicks == 1) {
             return;
         }
 
@@ -42,13 +49,12 @@ public class PlayerData {
 
             checkData.getSwingChecks().forEach(c -> c.handle(tickDelay));
         }
-        tick = 0;
     }
 
     public void handleTick() {
         tick++;
         breakTicks++;
-        ignoreNextClick = false;
+        releaseItemTicks++;
     }
 
     public boolean isBreaking() {

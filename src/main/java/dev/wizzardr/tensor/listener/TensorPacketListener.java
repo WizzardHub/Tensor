@@ -57,7 +57,7 @@ public class TensorPacketListener implements PacketListener {
 
             switch (action) {
                 case RELEASE_USE_ITEM:
-                    playerData.ignoreNextClick = true;
+                    playerData.releaseItemTicks = 0;
                     break;
 
                 case START_DIGGING:
