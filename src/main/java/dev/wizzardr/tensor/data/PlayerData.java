@@ -28,6 +28,11 @@ public class PlayerData {
     public boolean breaking, ignoreNextClick;
 
     public void handleClick(int tickDelay) {
+
+        if (ignoreNextClick) {
+            return;
+        }
+
         if (tickDelay <= 10 && breakTicks > 3) {
             sample.add(tickDelay);
 
