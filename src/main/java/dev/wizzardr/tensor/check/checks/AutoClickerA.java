@@ -13,8 +13,8 @@ public class AutoClickerA extends SwingCheck {
 
     public AutoClickerA(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
-                .withName("Auto Clicker B") // Name your check
-                .withSize(20) // The sample size of the clicker
+                .withName("Auto Clicker A") // Name your check
+                .withSize(20) // The sample size of what your check will have to reach before printing
                 .clearSamplesWhenFull() // Clears the samples when the queue is full
                 .excludeDoubleClicks() // Voids double-clicks from samples
                 .markAsExperimental() // Mark this check as an experimental check ("This still needs tests")
