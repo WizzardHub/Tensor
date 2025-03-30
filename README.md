@@ -1,21 +1,15 @@
-# Tensor
+![Tensor](https://github.com/user-attachments/assets/983b568c-399d-4243-8589-f50d4374f1b3)
 
-A Lightweight yet Powerful Anti-Cheat Plugin.
-
-Tensor is a Java-based anti-cheat plugin that uses statistics to detect auto-clickers with exceptional accuracy and stability, complemented by a replay system for precision tuning of detection thresholds.
-
-## Todo List
+Design, build, and rigorously test your anticheat checks with Tensor's powerful replay system. Simulate real-world scenarios by replaying millions of pre-recorded clicks in seconds and analyze the results to refine your detection algorithms, ensuring a robust and reliable autoclicker detection.
 
 ### Commands
 
-* [ ] Implement Replay <file/folder>
-* [x] Implement Debug
-* [x] Implement Alerts
-* [ ] Implement Record <player>
+![image](https://github.com/user-attachments/assets/f7751559-1bdd-4018-91e1-6ff81d4cffff)
 
-### Core Features
 
-* [ ] Test the right click filter in real case scenarios
+### Todo
+
+* [x] Test the right click filter in real case scenarios
 * [x] Add complementary formulas to Statistics
 * [ ] Add autoclicker checks
 * [ ] Provide a downloadable dataset of pre-recorded clicks
