@@ -4,8 +4,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.wizzardr.tensor.check.CheckManager;
-import dev.wizzardr.tensor.check.factory.SwingCheck;
-import dev.wizzardr.tensor.check.violation.ViolationService;
+import dev.wizzardr.tensor.service.ViolationService;
 import dev.wizzardr.tensor.command.TensorCommand;
 import dev.wizzardr.tensor.data.PlayerDataManager;
 import dev.wizzardr.tensor.listener.PlayerListener;
@@ -14,8 +13,6 @@ import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter

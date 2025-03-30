@@ -1,21 +1,14 @@
 package dev.wizzardr.tensor.data;
 
-import dev.wizzardr.tensor.Tensor;
-import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.check.CheckData;
 import dev.wizzardr.tensor.model.TensorRecordData;
+import dev.wizzardr.tensor.service.RecordService;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class PlayerData {
 
@@ -71,7 +64,11 @@ public class PlayerData {
             if (recordData.isStatus()) {
                 recordSample.add(tickDelay);
                 if (recordSample.size() == 50) {
-                    handleRecordSave();
+
+                    RecordService.builder()
+                            .playerData(this).build()
+                            .handleRecordSave();
+
                     recordSample.clear();
                 }
             }
@@ -81,38 +78,6 @@ public class PlayerData {
             }
 
             checkData.getSwingChecks().forEach(c -> c.handle(tickDelay));
-        }
-    }
-
-    private void handleRecordSave() {
-        Path replayPath = Path.of(
-                TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
-                "replays");
-
-        try {
-            Files.createDirectories(replayPath);
-            String recordName = recordData.getName();
-            Path filePath = replayPath.resolve(recordName + ".txt");
-
-            var linesToWrite = recordSample.stream()
-                    .map(String::valueOf)
-                    .toList();
-
-            Files.write(filePath, linesToWrite, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-            long totalLineCount;
-            try (Stream<String> lines = Files.lines(filePath)) {
-                totalLineCount = lines.count();
-            }
-
-            TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
-                    .filter(p -> p.hasPermission("tensor.record.status"))
-                    .forEach(player ->
-                            player.sendMessage(String.format("%s%s%s%s is being recorded for %s%s%s (%s)",
-                                    Tensor.PREFIX, ChatColor.WHITE, player.getName(), ChatColor.GRAY,
-                                    ChatColor.YELLOW, recordName, ChatColor.GRAY, totalLineCount)));
-        } catch (IOException e) {
-            Bukkit.getLogger().severe("Error writing to file: " + e.getMessage());
         }
     }
 

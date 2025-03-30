@@ -1,4 +1,4 @@
-package dev.wizzardr.tensor.check.violation;
+package dev.wizzardr.tensor.service;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.wizzardr.tensor.Tensor;
