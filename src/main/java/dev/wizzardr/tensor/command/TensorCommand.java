@@ -1,22 +1,21 @@
 package dev.wizzardr.tensor.command;
 
-import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import com.google.common.base.Strings;
 import dev.wizzardr.tensor.Tensor;
-import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
+import dev.wizzardr.tensor.model.TensorRecordData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @CommandAlias("tensor")
 @CommandPermission("tensor.command")
-public class TensorCommand extends BaseCommand {
+public class TensorCommand extends TensorBaseCommand {
 
     @Default
     @Description("Shows the available Tensor commands.")
@@ -75,12 +74,35 @@ public class TensorCommand extends BaseCommand {
         }
     }
 
-    private PlayerData getPlayerData(CommandSender sender) {
-        Player player = (Player) sender;
-        return TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(player.getUniqueId());
-    }
+    @Subcommand("record")
+    @Description("Starts or stops recording for a specific player.")
+    @CommandCompletion("@players @nothing")
+    @Syntax("<player> [<recordName>]")
+    public void onRecord(CommandSender sender, Player targetPlayer, @Optional String[] args) {
 
-    private PlayerData getPlayerData(Player player) {
-        return TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(player.getUniqueId());
+        PlayerData targetData = getPlayerData(targetPlayer);
+        TensorRecordData currentRecordData = targetData.getRecordData();
+
+        boolean isCurrentlyRecording = currentRecordData != null && currentRecordData.isStatus();
+        boolean shouldStartRecording = !isCurrentlyRecording;
+
+        if (shouldStartRecording && args.length == 1) {
+            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "You must provide a name to start recording.");
+            return;
+        }
+
+        String recordName = args.length == 1 ? currentRecordData.getName() : args[1];
+
+        targetData.setRecordData(new TensorRecordData(shouldStartRecording, shouldStartRecording ? recordName : null)); // Or pass existing name if stopping
+
+        if (shouldStartRecording) {
+            sender.sendMessage(String.format("%s%sNow%s recording %s%s %s(%s)",
+                    Tensor.PREFIX, ChatColor.GREEN, ChatColor.GRAY, ChatColor.WHITE,
+                    targetPlayer.getName(), ChatColor.GRAY, recordName));
+        } else {
+            sender.sendMessage(String.format("%s%sStopped%s recording %s%s %s(%s)",
+                    Tensor.PREFIX, ChatColor.RED, ChatColor.GRAY, ChatColor.WHITE,
+                    targetPlayer.getName(), ChatColor.GRAY, recordName));
+        }
     }
 }

@@ -19,9 +19,7 @@ import java.util.concurrent.Executors;
 
 public class ViolationService {
 
-    private static final String VIOLATION_ALERT_FORMAT = Tensor.PREFIX + "%s%s is clicking suspiciously %sx%.0f";
-
-    private double vl;
+    private static final String VIOLATION_ALERT_FORMAT = Tensor.PREFIX + "%s%s is clicking suspiciously %sx%s";
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder()
