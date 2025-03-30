@@ -5,7 +5,6 @@ import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.data.PlayerData;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 
 import java.util.Set;
 import java.util.stream.Collectors;

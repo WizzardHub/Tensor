@@ -2,7 +2,10 @@ package dev.wizzardr.tensor.math;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @UtilityClass
 public class Statistics {
