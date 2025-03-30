@@ -2,15 +2,21 @@ package dev.wizzardr.tensor.command;
 
 import co.aikar.commands.annotation.*;
 import dev.wizzardr.tensor.Tensor;
+import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.model.TensorRecordData;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CommandAlias("tensor")
 @CommandPermission("tensor.command")
@@ -27,10 +33,10 @@ public class TensorCommand extends TensorBaseCommand {
         sender.sendMessage(String.format("%sAvailable commands",
                 Tensor.PREFIX));
 
-        sender.sendMessage(String.format("%s/tensor alerts%s - Show alert.", aqua, gray));
-        sender.sendMessage(String.format("%s/tensor debug %s<check>%s - Allows you to debug a specific check.", aqua, white, gray));
+        sender.sendMessage(String.format("%s/tensor alerts%s - Shows alerts.", aqua, gray));
+        sender.sendMessage(String.format("%s/tensor debug %s<check> <player>%s - Allows you to debug a specific check.", aqua, white, gray));
         sender.sendMessage(String.format("%s/tensor record %s<player> <name>%s - Records clicks of a player.", aqua, white, gray));
-        sender.sendMessage(String.format("%s/tensor replayAll %s<name>%s - Replay all recordings of a folder.", aqua, white, gray));
+        sender.sendMessage(String.format("%s/tensor replayAll %s<name>%s - Replay all recordings of a path.", aqua, white, gray));
         sender.sendMessage(String.format("%s/tensor replay %s<name>%s - Replay a specific recording.", aqua, white, gray));
     }
 
@@ -102,6 +108,37 @@ public class TensorCommand extends TensorBaseCommand {
             sender.sendMessage(String.format("%s%sStopped%s recording %s%s %s(%s)",
                     Tensor.PREFIX, ChatColor.RED, ChatColor.GRAY, ChatColor.WHITE,
                     targetPlayer.getName(), ChatColor.GRAY, recordName));
+        }
+    }
+
+    @Subcommand("replay")
+    @Description("Replays a specific recording by name.")
+    @Syntax("<replayPath>")
+    public void onReplay(CommandSender sender, String replayPath) {
+        Path root = Path.of(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
+                "replays");
+
+        Path path = root.resolve(replayPath + ".txt");
+
+        if (!Files.exists(path) || !Files.isRegularFile(path)) {
+            sender.sendMessage(String.format("%s%sReplay file not found %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, replayPath));
+            return;
+        }
+
+        PlayerData playerData = new PlayerData();
+
+        try {
+            List<Integer> clicks;
+            try (Stream<String> lines = Files.lines(path)) {
+                clicks = lines.map(Integer::parseInt).toList();
+            }
+
+            clicks.forEach(playerData::handleClick);
+
+            sender.sendMessage(String.format("%sReplay of %s%s%s clicks is done !", Tensor.PREFIX, ChatColor.YELLOW, clicks.size(), ChatColor.GRAY));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

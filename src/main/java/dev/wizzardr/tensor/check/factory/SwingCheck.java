@@ -46,7 +46,6 @@ public abstract class SwingCheck {
             return;
 
         sample.add(delta ? Math.abs(tickDelay - lastTickDelay) : tickDelay);
-
         if (sample.size() == size) {
             handle(sample);
             if (clearSamples) {
@@ -71,7 +70,7 @@ public abstract class SwingCheck {
     }
 
     protected double getCps() {
-        return Statistics.getCps(delta ? sample : DequeUtil.resize(playerData.getSample(), size));
+        return Statistics.getCps(delta ? DequeUtil.resize(playerData.getSample(), size) : sample);
     }
 
     protected double threshold(double value) {

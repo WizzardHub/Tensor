@@ -14,7 +14,7 @@ public class PlayerData {
 
     @Getter public final Player player;
     protected final UUID uuid;
-    private final CheckData checkData = new CheckData();
+    @Getter private final CheckData checkData = new CheckData();
     @Getter @Setter private boolean alerts;
     @Getter @Setter TensorRecordData recordData =
             new TensorRecordData(false, null);
@@ -58,7 +58,10 @@ public class PlayerData {
             return;
         }
 
-        if (tickDelay <= 10 && breakTicks > 3) {
+        if (tickDelay <= 10) {
+            if (breakTicks > 3 && player != null)
+                return;
+
             sample.add(tickDelay);
 
             if (recordData.isStatus()) {

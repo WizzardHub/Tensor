@@ -30,27 +30,28 @@ public class ViolationService {
 
     public void handleViolation(SwingCheck check, DebugContainer data) {
         executorService.submit(() -> {
-            String checkInfo = data.getFormattedOutput();
-            String checkName = check.getName();
+                String checkInfo = data.getFormattedOutput();
+        String checkName = check.getName();
+        PlayerData playerData = check.getPlayerData();
 
-            PlayerData playerData = check.getPlayerData();
+        String playerName = playerData.getPlayer() != null ? playerData.getPlayer().getName() : "TensorRecorder";
 
-            if (check.isExperimental())
-                checkName += "*";
+        if (check.isExperimental())
+            checkName += "*";
 
-            TextComponent mainComponent = new TextComponent(String.format(VIOLATION_ALERT_FORMAT,
-                    playerData.getPlayer().getName(), ChatColor.WHITE, ChatColor.RED, ++playerData.vl));
+        TextComponent mainComponent = new TextComponent(String.format(VIOLATION_ALERT_FORMAT,
+                playerName, ChatColor.WHITE, ChatColor.RED, ++playerData.vl));
 
-            TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n\n%s", ChatColor.BLUE, checkName, checkInfo));
-            mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));
+        TextComponent hoverComponent = new TextComponent(String.format("%s%s's data\n\n%s", ChatColor.BLUE, checkName, checkInfo));
+        mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverComponent.getText()).create()));
 
-            ComponentBuilder builder = new ComponentBuilder(mainComponent);
+        ComponentBuilder builder = new ComponentBuilder(mainComponent);
 
-            TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers()
-                    .stream().filter(p -> p.hasPermission("tensor.alerts"))
-                    .forEach(player -> {
-                        player.spigot().sendMessage(builder.create());
-                    });
+        TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers()
+                .stream().filter(p -> p.hasPermission("tensor.alerts"))
+                .forEach(player -> {
+                    player.spigot().sendMessage(builder.create());
+                });
         });
     }
 
