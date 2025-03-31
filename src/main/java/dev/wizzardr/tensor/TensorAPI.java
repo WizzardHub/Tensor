@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import dev.wizzardr.tensor.check.CheckManager;
 import dev.wizzardr.tensor.command.TensorCommand;
 import dev.wizzardr.tensor.data.PlayerDataManager;
+import dev.wizzardr.tensor.listener.BukkitListener;
 import dev.wizzardr.tensor.listener.PlayerListener;
 import dev.wizzardr.tensor.listener.TensorPacketListener;
 import dev.wizzardr.tensor.service.ViolationService;
@@ -52,6 +53,7 @@ public enum TensorAPI {
         });
 
         plugin.getServer().getPluginManager().registerEvents(new PlayerListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new BukkitListener(), plugin);
         handleCommandRegistration();
     }
 
