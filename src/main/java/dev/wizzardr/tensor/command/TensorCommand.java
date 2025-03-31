@@ -1,20 +1,25 @@
 package dev.wizzardr.tensor.command;
 
 import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.Optional;
 import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.model.TensorRecordData;
+import dev.wizzardr.tensor.util.math.MathUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +41,7 @@ public class TensorCommand extends TensorBaseCommand {
         sender.sendMessage(String.format("%s/tensor alerts%s - Shows alerts.", aqua, gray));
         sender.sendMessage(String.format("%s/tensor debug %s<check> <player>%s - Allows you to debug a specific check.", aqua, white, gray));
         sender.sendMessage(String.format("%s/tensor record %s<player> <name>%s - Records clicks of a player.", aqua, white, gray));
+        sender.sendMessage(String.format("%s/tensor recordstats%s - Displays all the recorded datasets (sample size, avg cps).", aqua, gray));
         sender.sendMessage(String.format("%s/tensor replayAll %s<name>%s - Replay all recordings of a path.", aqua, white, gray));
         sender.sendMessage(String.format("%s/tensor replay %s<name>%s - Replay a specific recording.", aqua, white, gray));
     }
@@ -139,6 +145,59 @@ public class TensorCommand extends TensorBaseCommand {
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Subcommand("recordstats")
+    @Description("Displays a list of all recorded CPS data with colorful formatting.")
+    public void onRecordStats(CommandSender sender) {
+        var pluginDataFolder = TensorAPI.INSTANCE.getPlugin().getDataFolder().toString();
+        var replayPath = Path.of(pluginDataFolder, "replays");
+
+        if (!Files.exists(replayPath)) {
+            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "No recordings found.");
+            return;
+        }
+
+        try (var filesStream = Files.list(replayPath)) {
+            var recordFiles = filesStream
+                    .filter(path -> path.toString().endsWith(".txt"))
+                    .toList();
+
+            if (recordFiles.isEmpty()) {
+                sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "No recordings found.");
+                return;
+            }
+
+            // Send header once
+            sender.sendMessage(String.format("%s%sRecord Statistics:", Tensor.PREFIX, ChatColor.GRAY));
+
+            for (var filePath : recordFiles) {
+                var fileName = filePath.getFileName().toString();
+                var recordName = fileName.replaceFirst("\\.txt$", "");
+
+                try {
+                    var tickDelays = MathUtil.readTickDelays(filePath);
+                    if (tickDelays.isEmpty()) continue;
+
+                    var averageTickDelay = tickDelays.stream()
+                            .mapToInt(Integer::intValue)
+                            .average()
+                            .orElse(0.0);
+                    var averageCps = averageTickDelay > 0 ? 20.0 / averageTickDelay : 0;
+
+                    sender.sendMessage(String.format(
+                            "- %s%s %s(%s%d %ssamples, %s%.2f %scps)",
+                            ChatColor.YELLOW, recordName,
+                            ChatColor.GRAY, ChatColor.GREEN, tickDelays.size(), ChatColor.GRAY,
+                            ChatColor.YELLOW, averageCps, ChatColor.GRAY));
+                } catch (Exception e) {
+                    Bukkit.getLogger().warning("Error processing file " + recordName + ": " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Error reading records: " + e.getMessage());
+            Bukkit.getLogger().severe("Error listing record files: " + e.getMessage());
         }
     }
 }
