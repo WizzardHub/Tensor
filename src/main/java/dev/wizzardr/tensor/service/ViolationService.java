@@ -31,6 +31,7 @@ public class ViolationService {
         String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "TensorRecorder";
         String checkName = check.getName();
         String checkInfo = data.getFormattedOutput();
+
         int violationLevel = ++playerData.vl;
 
         if (check.isExperimental()) {
@@ -63,24 +64,26 @@ public class ViolationService {
 
     public void handleDebug(SwingCheck check, DebugContainer data) {
 
+        PlayerData playerData = check.getPlayerData();
+        Player bukkitPlayer = playerData.getPlayer();
+
         String checkInfo = data.getFormattedOutputSingle();
         String checkName = check.getName().replaceAll("\\s","");
-
-        String targetPlayer = check.getPlayerData().getPlayer().getName();
+        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "TensorRecorder";
 
         TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
                 .map(p -> TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId()))
-                .filter(playerData -> {
-                    for (Map.Entry<Player, List<String>> entry : playerData.getDebugs().entrySet()) {
+                .filter(p -> {
+                    for (Map.Entry<Player, List<String>> entry : p.getDebugs().entrySet()) {
                         Player player = entry.getKey();
                         List<String> checks = entry.getValue();
-                        return targetPlayer.equals(player.getName()) && checks.contains(checkName);
+                        return playerName.equals(player.getName()) && checks.contains(checkName);
                     }
 
                     return false;
                 })
-                .forEach(playerData -> playerData.getPlayer().sendMessage(
+                .forEach(p -> p.getPlayer().sendMessage(
                         String.format("%s[%s]%s (%s) %s", ChatColor.RED, checkName,
-                                ChatColor.GRAY, targetPlayer, checkInfo)));
+                                ChatColor.GRAY, playerName, checkInfo)));
     }
 }

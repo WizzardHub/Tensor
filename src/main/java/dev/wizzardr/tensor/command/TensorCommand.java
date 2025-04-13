@@ -1,26 +1,21 @@
 package dev.wizzardr.tensor.command;
 
 import co.aikar.commands.annotation.*;
-import co.aikar.commands.annotation.Optional;
 import dev.wizzardr.tensor.Tensor;
 import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.model.TensorRecordData;
-import dev.wizzardr.tensor.util.math.MathUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @CommandAlias("tensor")
@@ -148,56 +143,40 @@ public class TensorCommand extends TensorBaseCommand {
         }
     }
 
-    @Subcommand("recordstats")
-    @Description("Displays a list of all recorded CPS data with colorful formatting.")
-    public void onRecordStats(CommandSender sender) {
-        var pluginDataFolder = TensorAPI.INSTANCE.getPlugin().getDataFolder().toString();
-        var replayPath = Path.of(pluginDataFolder, "replays");
+    @Subcommand("replayall")
+    @Description("Replays all recordings in a specified folder and its subfolders.")
+    @Syntax("<folderPath>")
+    public void onReplayAll(CommandSender sender, String folderPath) {
+        Path root = Path.of(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
+                "replays");
 
-        if (!Files.exists(replayPath)) {
-            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "No recordings found.");
+        Path path = root.resolve(folderPath);
+
+        if (!Files.exists(path) || !Files.isDirectory(path)) {
+            sender.sendMessage(String.format("%s%sReplay folder not found %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, folderPath));
             return;
         }
 
-        try (var filesStream = Files.list(replayPath)) {
+        try (var filesStream = Files.walk(path)) {
             var recordFiles = filesStream
-                    .filter(path -> path.toString().endsWith(".txt"))
+                    .filter(Files::isRegularFile)
+                    .filter(file -> file.toString().endsWith(".txt"))
                     .toList();
 
             if (recordFiles.isEmpty()) {
-                sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "No recordings found.");
+                sender.sendMessage(String.format("%s%sNo recordings found in %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, folderPath));
                 return;
             }
 
-            // Send header once
-            sender.sendMessage(String.format("%s%sRecord Statistics:", Tensor.PREFIX, ChatColor.GRAY));
+            sender.sendMessage(String.format("%sReplaying %s%d %srecordings...", Tensor.PREFIX, ChatColor.YELLOW, recordFiles.size(), ChatColor.GRAY));
 
             for (var filePath : recordFiles) {
-                var fileName = filePath.getFileName().toString();
-                var recordName = fileName.replaceFirst("\\.txt$", "");
-
-                try {
-                    var tickDelays = MathUtil.readTickDelays(filePath);
-                    if (tickDelays.isEmpty()) continue;
-
-                    var averageTickDelay = tickDelays.stream()
-                            .mapToInt(Integer::intValue)
-                            .average()
-                            .orElse(0.0);
-                    var averageCps = averageTickDelay > 0 ? 20.0 / averageTickDelay : 0;
-
-                    sender.sendMessage(String.format(
-                            "- %s%s %s(%s%d %ssamples, %s%.2f %scps)",
-                            ChatColor.YELLOW, recordName,
-                            ChatColor.GRAY, ChatColor.GREEN, tickDelays.size(), ChatColor.GRAY,
-                            ChatColor.YELLOW, averageCps, ChatColor.GRAY));
-                } catch (Exception e) {
-                    Bukkit.getLogger().warning("Error processing file " + recordName + ": " + e.getMessage());
-                }
+                String relativePath = root.relativize(filePath).toString().replace(".txt", "");
+                onReplay(sender, relativePath);
             }
         } catch (IOException e) {
-            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Error reading records: " + e.getMessage());
-            Bukkit.getLogger().severe("Error listing record files: " + e.getMessage());
+            sender.sendMessage(String.format("%s%sError replaying recordings: %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, e.getMessage()));
+            Bukkit.getLogger().severe("Error replaying recordings: " + e.getMessage());
         }
     }
 }

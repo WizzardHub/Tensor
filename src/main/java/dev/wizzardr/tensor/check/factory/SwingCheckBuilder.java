@@ -31,8 +31,8 @@ public class SwingCheckBuilder {
         return this;
     }
 
-    public SwingCheckBuilder withDelta(boolean delta) {
-        this.delta = delta;
+    public SwingCheckBuilder asDeltaCheck() {
+        this.delta = true;
         return this;
     }
 

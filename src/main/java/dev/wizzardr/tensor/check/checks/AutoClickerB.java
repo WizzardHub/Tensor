@@ -4,12 +4,11 @@ import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
 import dev.wizzardr.tensor.data.PlayerData;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayDeque;
 
 /*
- * It is almost impossible for human to consistently click 16+ cps
+ * It is almost impossible for human to consistently click 17+ cps
  * with no double clicks, especially when the clicks are being
  * rounded into ticks
  */
@@ -18,7 +17,7 @@ public class AutoClickerB extends SwingCheck {
     public AutoClickerB(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker B")
-                .withSize(50)
+                .withSize(100)
                 .clearSamplesWhenFull()
                 .excludeDoubleClicks()
                 .build());
@@ -33,10 +32,10 @@ public class AutoClickerB extends SwingCheck {
                 .values(cps, threshold)
                 .build();
 
-        // Balance 0.75 = 15cps which is the decay
-        if (threshold((cps / 20.0) - 0.75) > 0.15) {
-            threshold(-1);
+        // Balance 0.85 = 17cps which is the decay
+        if (threshold((cps / 20.0) - 0.85) > 0.15) {
             alert(data);
+            threshold(-1);
         }
 
         debug(data);
