@@ -72,6 +72,12 @@ public abstract class SwingCheck {
         violationService.handleDebug(this, data);
     }
 
+    protected void remove(int amount) {
+        for (int i = 0; i < amount; i++) {
+            sample.poll();
+        }
+    }
+
     protected double getCps() {
         return Statistics.getCps(delta ? DequeUtil.resize(playerData.getSample(), size) : sample);
     }

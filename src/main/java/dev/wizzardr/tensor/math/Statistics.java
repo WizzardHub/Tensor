@@ -2,10 +2,7 @@ package dev.wizzardr.tensor.math;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @UtilityClass
 public class Statistics {
@@ -46,11 +43,11 @@ public class Statistics {
      */
     public <T extends Number> int[] getDistribution(ArrayDeque<T> data) {
 
-        int size = data.size();
-        int[] counter = new int[size];
+        int size = 10;
+        int[] counter = new int[size + 1];
 
         for (Number i : data) {
-            if (i.intValue() < size)
+            if (i.intValue() <= size)
                 counter[i.intValue()]++;
         }
 
@@ -146,22 +143,30 @@ public class Statistics {
     }
 
     /**
-     * Calculate the entropy of the data.
+     * Calculate the Shannon entropy of the data based on the frequency of each value.
+     * This method behaves the same as the first getEntropy function provided.
      *
      * @param data The data to calculate the entropy from.
-     * @return The entropy of the data.
+     * @return The Shannon entropy of the data in bits.
      */
     public <T extends Number> double getEntropy(ArrayDeque<T> data) {
-        double mean = getAverage(data);
-        double stDev = getStDev(data);
-        double entropy = 0.0;
+        int n = data.size();
+        if (n <= 1) return 0;
+
+        Map<Double, Integer> counts = new HashMap<>();
         for (T value : data) {
-            double p = (value.doubleValue() - mean) / stDev;
+            double doubleValue = value.doubleValue();
+            counts.put(doubleValue, counts.getOrDefault(doubleValue, 0) + 1);
+        }
+
+        double sum = 0;
+        for (int count : counts.values()) {
+            double p = (double) count / n;
             if (p > 0) {
-                entropy -= p * Math.log(p);
+                sum -= p * Math.log(p);
             }
         }
-        return entropy;
+        return sum / Math.log(2);
     }
 
     /**
@@ -232,5 +237,9 @@ public class Statistics {
             bdsSum += (diff * diff) / stDev;
         }
         return bdsSum;
+    }
+
+    public <T extends Number> int getDoubleClicks(ArrayDeque<T> data) {
+        return (int) data.stream().filter(n -> n.intValue() == 0).count();
     }
 }
