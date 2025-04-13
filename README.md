@@ -6,8 +6,7 @@ Design, build, and rigorously test your anticheat checks with Tensor's powerful 
 
 `/tensor` - Tensor help menu
 
-![image](https://github.com/user-attachments/assets/5a476c68-0107-4dbf-b474-cae18357ece4)
-
+![image](https://github.com/user-attachments/assets/f0872521-606f-4450-a0be-f19b3855d7d9)
 
 `/tensor alerts` - Enable or disable chat alerts
 
@@ -17,10 +16,13 @@ Design, build, and rigorously test your anticheat checks with Tensor's powerful 
 
 ![image](https://github.com/user-attachments/assets/5c065554-d33a-47d3-89b0-94e0ec242020)
 
-
 `/tensor record <player> [<name>]` - Start or end a record session for a player (with auto completion)
 
 ![image](https://github.com/user-attachments/assets/def9284f-b475-45a9-ade9-31ab9b56e8b0)
+
+`/tensor recordstats` - Will show you a list of all the datasets that have been made (Sample Size, average CPS)
+
+![image](https://github.com/user-attachments/assets/998dd704-1c15-437d-b071-52d46cb70c8d)
 
 ### Todo
 
