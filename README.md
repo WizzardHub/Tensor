@@ -20,9 +20,13 @@ Design, build, and rigorously test your anticheat checks with Tensor's powerful 
 
 ![image](https://github.com/user-attachments/assets/def9284f-b475-45a9-ade9-31ab9b56e8b0)
 
-`/tensor recordstats` - Will show you a list of all the datasets that have been made (Sample Size, average CPS)
+`/tensor replay <name>` - Replay a previously recorded sample
 
-![image](https://github.com/user-attachments/assets/998dd704-1c15-437d-b071-52d46cb70c8d)
+![image](https://github.com/user-attachments/assets/1840d7be-f00b-4280-b46b-d72b9e692733)
+
+`/tensor replayall <path>` - Replay all samples present inside of a folder
+
+![image](https://github.com/user-attachments/assets/4df6b439-8b47-47c4-8f21-3c6139c2a51c)
 
 ### Todo
 
