@@ -51,6 +51,8 @@ public abstract class SwingCheck {
             handle(sample);
             if (clearSamples) {
                 sample.clear();
+            } else {
+                sample.poll();
             }
         }
 
