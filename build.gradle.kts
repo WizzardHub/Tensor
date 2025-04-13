@@ -13,6 +13,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
     maven { url = uri("https://nexus.funkemunky.cc/content/repositories/releases/") }
     maven { url = uri("https://repo.codemc.io/repository/maven-releases/") }
     maven { url = uri("https://repo.aikar.co/content/groups/aikar/") }
@@ -20,7 +21,7 @@ repositories {
 
 dependencies {
     // Spigot
-    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1")
+    compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
 
     // Class Index
     implementation("org.atteo.classindex:classindex:3.9")
@@ -35,6 +36,11 @@ dependencies {
 
     // ACF
     implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
+
+    // Adventure
+    implementation("net.kyori:adventure-api:4.14.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    implementation("net.kyori:adventure-text-serializer-gson:4.14.0")
 }
 
 tasks.withType<JavaCompile> {

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Builder
@@ -30,7 +31,7 @@ public class RecordService {
             String recordName = playerData.getRecordData().getName();
             Path filePath = replayPath.resolve(recordName + ".txt");
 
-            var linesToWrite = playerData.getRecordSample().stream()
+            List<String> linesToWrite = playerData.getRecordSample().stream()
                     .map(String::valueOf)
                     .toList();
 

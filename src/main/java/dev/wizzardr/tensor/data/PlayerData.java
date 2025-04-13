@@ -27,6 +27,7 @@ public class PlayerData {
     public PlayerData() {
         this.player = null;
         this.uuid = null;
+        this.breakTicks = Integer.MAX_VALUE;
         checkData.register(this);
     }
 
@@ -58,9 +59,7 @@ public class PlayerData {
             return;
         }
 
-        if (tickDelay <= 10) {
-            if (breakTicks > 3 && player != null)
-                return;
+        if (tickDelay <= 10 && breakTicks > 3) {
 
             sample.add(tickDelay);
 

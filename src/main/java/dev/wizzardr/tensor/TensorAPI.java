@@ -11,6 +11,7 @@ import dev.wizzardr.tensor.listener.TensorPacketListener;
 import dev.wizzardr.tensor.service.ViolationService;
 import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import lombok.Getter;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.stream.Collectors;
@@ -24,9 +25,15 @@ public enum TensorAPI {
     private final PlayerDataManager playerDataManager = new PlayerDataManager();
     private final CheckManager checkManager = new CheckManager();
 
+    private BukkitAudiences bukkitAudiences;
+
     public void onDisable(final JavaPlugin plugin) {
         this.plugin = plugin;
         this.playerDataManager.dispose();
+
+        if (bukkitAudiences != null) {
+            bukkitAudiences.close();
+        }
 
         PacketEvents.getAPI().getEventManager().unregisterAllListeners();
         PacketEvents.getAPI().terminate();
@@ -43,6 +50,8 @@ public enum TensorAPI {
 
         PacketEvents.getAPI().load();
         PacketEvents.getAPI().init();
+
+        bukkitAudiences = BukkitAudiences.create(plugin);
 
         /* Add back players if reload */
         plugin.getServer().getOnlinePlayers().forEach(player -> {

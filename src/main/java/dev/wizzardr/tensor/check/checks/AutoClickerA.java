@@ -5,6 +5,7 @@ import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
 import dev.wizzardr.tensor.data.PlayerData;
 import dev.wizzardr.tensor.math.Statistics;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
