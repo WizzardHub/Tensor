@@ -19,7 +19,7 @@ public class PlayerData {
     @Getter @Setter TensorRecordData recordData =
             new TensorRecordData(false, null);
 
-    @Getter private final Map<Player, List<String>> debugs = new HashMap<>();
+    @Getter private final Map<String, List<String>> debugs = new HashMap<>();
 
     /*
     * This constructor's only purpose is for the replay system

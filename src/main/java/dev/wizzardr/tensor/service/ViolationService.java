@@ -28,7 +28,7 @@ public class ViolationService {
         PlayerData playerData = check.getPlayerData();
         Player bukkitPlayer = playerData.getPlayer();
 
-        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "TensorRecorder";
+        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "Recorder";
         String checkName = check.getName();
         String checkInfo = data.getFormattedOutput();
 
@@ -69,15 +69,15 @@ public class ViolationService {
 
         String checkInfo = data.getFormattedOutputSingle();
         String checkName = check.getName().replaceAll("\\s","");
-        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "TensorRecorder";
+        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "Recorder";
 
         TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
                 .map(p -> TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId()))
                 .filter(p -> {
-                    for (Map.Entry<Player, List<String>> entry : p.getDebugs().entrySet()) {
-                        Player player = entry.getKey();
+                    for (Map.Entry<String, List<String>> entry : p.getDebugs().entrySet()) {
+                        String player = entry.getKey();
                         List<String> checks = entry.getValue();
-                        return playerName.equals(player.getName()) && checks.contains(checkName);
+                        return (playerName.equals(player) || player.equals("*")) && checks.contains(checkName);
                     }
 
                     return false;

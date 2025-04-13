@@ -57,25 +57,25 @@ public class TensorCommand extends TensorBaseCommand {
     @Description("Sends debug information for a specific check and player.")
     @CommandCompletion("@checks @players")
     @Syntax("<check> [<player>]")
-    public void onDebug(CommandSender sender, String check, Player target) {
+    public void onDebug(CommandSender sender, String check, @Optional String target) {
         if (target == null) {
-            target = (Player) sender;
+            target = "*";
         }
 
         PlayerData playerData = getPlayerData(sender);
-        Map<Player, List<String>> debugsMap = playerData.getDebugs();
+        Map<String, List<String>> debugsMap = playerData.getDebugs();
 
         List<String> checks = debugsMap.computeIfAbsent(target, k -> new ArrayList<>());
 
         if (checks.contains(check)) {
             sender.sendMessage(String.format("%s%sStopped%s debugging %s%s %s(%s)",
                     Tensor.PREFIX, ChatColor.RED, ChatColor.GRAY, ChatColor.WHITE,
-                    check, ChatColor.GRAY, target.getName()));
+                    check, ChatColor.GRAY, target));
             checks.remove(check);
         } else {
             sender.sendMessage(String.format("%s%sNow%s debugging %s%s %s(%s)",
                     Tensor.PREFIX, ChatColor.GREEN, ChatColor.GRAY, ChatColor.WHITE,
-                    check, ChatColor.GRAY, target.getName()));
+                    check, ChatColor.GRAY, target));
             checks.add(check);
         }
     }
