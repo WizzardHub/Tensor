@@ -16,11 +16,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 @CommandAlias("tensor")
 @CommandPermission("tensor.command")
 public class TensorCommand extends TensorBaseCommand {
+
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
 
     @Default
     @Description("Shows the available Tensor commands.")
@@ -171,8 +175,10 @@ public class TensorCommand extends TensorBaseCommand {
             sender.sendMessage(String.format("%sReplaying %s%d %srecordings...", Tensor.PREFIX, ChatColor.YELLOW, recordFiles.size(), ChatColor.GRAY));
 
             for (var filePath : recordFiles) {
-                String relativePath = root.relativize(filePath).toString().replace(".txt", "");
-                onReplay(sender, relativePath);
+                EXECUTOR_SERVICE.submit(() -> {
+                    String relativePath = root.relativize(filePath).toString().replace(".txt", "");
+                    onReplay(sender, relativePath);
+                });
             }
         } catch (IOException e) {
             sender.sendMessage(String.format("%s%sError replaying recordings: %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, e.getMessage()));
