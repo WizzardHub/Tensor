@@ -8,7 +8,6 @@ import dev.wizzardr.tensor.service.ViolationService;
 import dev.wizzardr.tensor.util.DequeUtil;
 import lombok.Getter;
 import org.atteo.classindex.IndexSubclasses;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayDeque;
 
@@ -87,9 +86,8 @@ public abstract class SwingCheck {
         return threshold;
     }
 
-    protected double multiplyThreshold(double value) {
+    protected void multiplyThreshold(double value) {
         threshold = Math.max(0, threshold * value);
-        return threshold;
     }
 
     protected double threshold() {
