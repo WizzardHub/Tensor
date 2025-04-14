@@ -16,15 +16,20 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.stream.Stream;
 
 @CommandAlias("tensor")
 @CommandPermission("tensor.command")
 public class TensorCommand extends TensorBaseCommand {
 
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(8);
+    public static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(
+            Runtime.getRuntime().availableProcessors(),
+            Runtime.getRuntime().availableProcessors() * 2,
+            60L, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(1000),
+            new ThreadPoolExecutor.CallerRunsPolicy()
+    );
 
     @Default
     @Description("Shows the available Tensor commands.")
