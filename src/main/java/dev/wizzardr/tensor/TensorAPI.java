@@ -30,11 +30,7 @@ public enum TensorAPI {
     public void onDisable(final JavaPlugin plugin) {
         this.plugin = plugin;
         this.playerDataManager.dispose();
-
-        if (bukkitAudiences != null) {
-            bukkitAudiences.close();
-            bukkitAudiences = null;
-        }
+        this.bukkitAudiences.close();
 
         PacketEvents.getAPI().getEventManager().unregisterAllListeners();
         PacketEvents.getAPI().terminate();

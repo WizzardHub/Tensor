@@ -13,8 +13,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
 public class ViolationService {
 
@@ -23,6 +30,8 @@ public class ViolationService {
             ChatColor.GRAY + "%s" +
             ChatColor.WHITE + " is clicking suspiciously " +
             ChatColor.RED + "x%d";
+
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     public void handleViolation(SwingCheck check, DebugContainer data) {
         PlayerData playerData = check.getPlayerData();
@@ -43,6 +52,23 @@ public class ViolationService {
                 playerName,
                 violationLevel
         );
+
+        if (bukkitPlayer == null) {
+            EXECUTOR_SERVICE.submit(() -> {
+                try {
+                    Path logFile = Paths.get(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
+                            "logs", String.format("%s-%s.txt", playerData.getRecordData().getName(), check.getName().strip()));
+                    Files.createDirectories(logFile.getParent());
+                    Files.write(logFile,
+                            ChatColor.stripColor(data.getFormattedOutputSingle() + "\n").getBytes(),
+                            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                } catch (Exception e) {
+                    TensorAPI.INSTANCE.getPlugin()
+                            .getLogger()
+                            .log(Level.SEVERE, e.toString());
+                }
+            });
+        }
 
         String hoverTextString = ChatColor.AQUA + checkName + "'s data\n\n" + ChatColor.WHITE + checkInfo;
 

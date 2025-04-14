@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @CommandPermission("tensor.command")
 public class TensorCommand extends TensorBaseCommand {
 
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(4);
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(8);
 
     @Default
     @Description("Shows the available Tensor commands.")
@@ -131,6 +131,8 @@ public class TensorCommand extends TensorBaseCommand {
         }
 
         PlayerData playerData = new PlayerData();
+        // set the replay name in order to write it in the logs folder
+        playerData.setRecordData(new TensorRecordData(false, replayPath));
 
         try {
             List<Integer> clicks;
