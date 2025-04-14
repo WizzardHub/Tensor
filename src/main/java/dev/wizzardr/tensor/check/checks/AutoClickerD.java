@@ -12,6 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/*
+ * Butterfly like generated pattern
+ * The amount of perfectly timed double clicks and delay
+ * is way too high
+ */
 public class AutoClickerD extends SwingCheck {
 
     public AutoClickerD(PlayerData playerData) {
