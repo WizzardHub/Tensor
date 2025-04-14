@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 public class ViolationService {
@@ -93,23 +94,26 @@ public class ViolationService {
         PlayerData playerData = check.getPlayerData();
         Player bukkitPlayer = playerData.getPlayer();
 
-        String checkInfo = data.getFormattedOutputSingle();
         String checkName = check.getName().replaceAll("\\s","");
         String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "Recorder";
 
-        TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
-                .map(p -> TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId()))
-                .filter(p -> {
-                    for (Map.Entry<String, List<String>> entry : p.getDebugs().entrySet()) {
-                        String player = entry.getKey();
-                        List<String> checks = entry.getValue();
-                        return (playerName.equals(player) || player.equals("*")) && checks.contains(checkName);
-                    }
+        EXECUTOR_SERVICE.submit(() -> {
+            AtomicReference<String> checkInfo = new AtomicReference<>();
+            TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
+                    .map(p -> TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId()))
+                    .filter(p -> {
+                        for (Map.Entry<String, List<String>> entry : p.getDebugs().entrySet()) {
+                            String player = entry.getKey();
+                            List<String> checks = entry.getValue();
+                            checkInfo.set(data.getFormattedOutputSingle());
+                            return (playerName.equals(player) || player.equals("*")) && checks.contains(checkName);
+                        }
 
-                    return false;
-                })
-                .forEach(p -> p.getPlayer().sendMessage(
-                        String.format("%s[%s]%s (%s) %s", ChatColor.RED, checkName,
-                                ChatColor.GRAY, playerName, checkInfo)));
+                        return false;
+                    })
+                    .forEach(p -> p.getPlayer().sendMessage(
+                    String.format("%s[%s]%s (%s) %s", ChatColor.RED, checkName,
+                            ChatColor.GRAY, playerName, checkInfo.get())));
+        });
     }
 }

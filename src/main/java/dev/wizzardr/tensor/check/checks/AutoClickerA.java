@@ -26,6 +26,8 @@ public class AutoClickerA extends SwingCheck {
     // Below we will display all the statistics that are inside our math class and have a debug pre-set for you.
     @Override
     protected void handle(ArrayDeque<Integer> samples) {
+        /* Example
+
         double cps = getCps();
         double stDev = Statistics.getStDev(samples);
         double modifCount = Statistics.getModifCount(samples);
@@ -50,5 +52,6 @@ public class AutoClickerA extends SwingCheck {
                 .values(cps, stDev, modifCount, average, entropy, gini, bds, recurrenceRate,
                         skewness, kurtosis, variance, variation, Arrays.toString(distribution), outlier.toString())
                 .build());
+         */
     }
 }
