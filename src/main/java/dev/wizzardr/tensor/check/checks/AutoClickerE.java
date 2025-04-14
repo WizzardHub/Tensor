@@ -34,7 +34,7 @@ public class AutoClickerE extends SwingCheck {
 
         List<Integer> n = new ArrayList<>(samples);
         long clickPattern = IntStream.range(0, n.size() - 1)
-                .filter(i -> n.get(i) == 0 && n.get(i + 1) > 2)
+                .filter(i -> n.get(i) == 0 && n.get(i + 1) <= 1)
                 .count();
 
         DebugContainer data = DebugContainer.builder()
