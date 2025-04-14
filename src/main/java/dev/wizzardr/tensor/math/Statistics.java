@@ -153,15 +153,9 @@ public class Statistics {
         int n = data.size();
         if (n <= 1) return 0;
 
-        Map<Double, Integer> counts = new HashMap<>();
-        for (T value : data) {
-            double doubleValue = value.doubleValue();
-            counts.put(doubleValue, counts.getOrDefault(doubleValue, 0) + 1);
-        }
-
         double sum = 0;
-        for (int count : counts.values()) {
-            double p = (double) count / n;
+        for (T value : data) {
+            double p = value.doubleValue() / n;
             if (p > 0) {
                 sum -= p * Math.log(p);
             }
@@ -237,6 +231,31 @@ public class Statistics {
             bdsSum += (diff * diff) / stDev;
         }
         return bdsSum;
+    }
+
+    /**
+     * Calculate the mean absolute difference between consecutive elements in the data.
+     * This measure quantifies the sequential volatility of the data.
+     *
+     * @param data The data to calculate the mean absolute difference from.
+     * @return The mean absolute difference of the data.
+     */
+    public <T extends Number> double getMAD(ArrayDeque<T> data) {
+        if (data.size() <= 1) return 0.0;
+
+        Iterator<T> iterator = data.iterator();
+        double prev = iterator.next().doubleValue();
+        double sum = 0.0;
+        int count = 0;
+
+        while (iterator.hasNext()) {
+            double curr = iterator.next().doubleValue();
+            sum += Math.abs(curr - prev);
+            prev = curr;
+            count++;
+        }
+
+        return sum / count;
     }
 
     public <T extends Number> int getDoubleClicks(ArrayDeque<T> data) {

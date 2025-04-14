@@ -33,6 +33,7 @@ public enum TensorAPI {
 
         if (bukkitAudiences != null) {
             bukkitAudiences.close();
+            bukkitAudiences = null;
         }
 
         PacketEvents.getAPI().getEventManager().unregisterAllListeners();
@@ -41,6 +42,7 @@ public enum TensorAPI {
 
     public void onEnable(final JavaPlugin plugin) {
         this.plugin = plugin;
+        this.bukkitAudiences = BukkitAudiences.create(plugin);
 
         PacketEvents.setAPI(SpigotPacketEventsBuilder.build(plugin));
         PacketEvents.getAPI().getSettings().checkForUpdates(false);
@@ -50,8 +52,6 @@ public enum TensorAPI {
 
         PacketEvents.getAPI().load();
         PacketEvents.getAPI().init();
-
-        bukkitAudiences = BukkitAudiences.create(plugin);
 
         /* Add back players if reload */
         plugin.getServer().getOnlinePlayers().forEach(player -> {

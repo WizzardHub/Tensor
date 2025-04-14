@@ -87,6 +87,11 @@ public abstract class SwingCheck {
         return threshold;
     }
 
+    protected double multiplyThreshold(double value) {
+        threshold = Math.max(0, threshold * value);
+        return threshold;
+    }
+
     protected double threshold() {
         return threshold(1);
     }
