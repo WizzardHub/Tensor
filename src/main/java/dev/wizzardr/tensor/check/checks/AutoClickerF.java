@@ -25,10 +25,10 @@ public class AutoClickerF extends SwingCheck {
     ArrayDeque<Double> skewnesses = new ArrayDeque<>();
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
 
         double cps = getCps();
-        double skewness = Statistics.getSkewness(samples);
+        double skewness = Statistics.getSkewness(sample);
 
         if (cps > 8 && skewnesses.add(skewness) && skewnesses.size() == 10) {
 

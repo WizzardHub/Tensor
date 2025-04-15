@@ -25,25 +25,25 @@ public class AutoClickerA extends SwingCheck {
 
     // Below we will display all the statistics that are inside our math class and have a debug pre-set for you.
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
         /* Example
 
         double cps = getCps();
-        double stDev = Statistics.getStDev(samples);
-        double modifCount = Statistics.getModifCount(samples);
-        double average = Statistics.getAverage(samples);
-        double entropy = Statistics.getEntropy(samples);
-        double gini = Statistics.getGini(samples);
-        double bds = Statistics.getBDS(samples);
-        double recurrenceRate = Statistics.getRecurrenceRate(samples);
-        double skewness = Statistics.getSkewness(samples);
-        double kurtosis = Statistics.getKurtosis(samples);
-        double variance = Statistics.getVariance(samples);
-        double variation = Statistics.getVariation(samples);
+        double stDev = Statistics.getStDev(sample);
+        double modifCount = Statistics.getModifCount(sample);
+        double average = Statistics.getAverage(sample);
+        double entropy = Statistics.getEntropy(sample);
+        double gini = Statistics.getGini(sample);
+        double bds = Statistics.getBDS(sample);
+        double recurrenceRate = Statistics.getRecurrenceRate(sample);
+        double skewness = Statistics.getSkewness(sample);
+        double kurtosis = Statistics.getKurtosis(sample);
+        double variance = Statistics.getVariance(sample);
+        double variation = Statistics.getVariation(sample);
 
-        int[] distribution = Statistics.getDistribution(samples);
+        int[] distribution = Statistics.getDistribution(sample);
 
-        List<Integer> outlier = Statistics.getOutliers(samples);
+        List<Integer> outlier = Statistics.getOutliers(sample);
 
         debug(DebugContainer.builder()
                 .formatString("cps: %.2f, stDev: %.2f, modifCount: %.2f, average: %.2f, entropy: %.2f, gini: %.2f, " +

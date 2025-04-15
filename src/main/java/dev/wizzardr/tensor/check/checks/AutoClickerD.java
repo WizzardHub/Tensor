@@ -27,20 +27,20 @@ public class AutoClickerD extends SwingCheck {
     }
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
 
         double cps = getCps();
-        int[] distribution = Statistics.getDistribution(samples);
+        int[] distribution = Statistics.getDistribution(sample);
 
         // Basic generated butterfly pattern
         // double click -> wait -> double click ...
-        List<Integer> n = new ArrayList<>(samples);
+        List<Integer> n = new ArrayList<>(sample);
         long butterfly = IntStream.range(0, n.size() - 1)
                 .filter(i -> n.get(i) == 0 && n.get(i + 1) > 2)
                 .count();
 
         double ratio = butterfly / (double) getSize();
-        int doubleClicks = Statistics.getDoubleClicks(samples);
+        int doubleClicks = Statistics.getDoubleClicks(sample);
 
         double doubleClickRatio = butterfly / (double) doubleClicks;
         double product = ratio * doubleClickRatio;

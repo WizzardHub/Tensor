@@ -25,15 +25,15 @@ public class AutoClickerE2 extends SwingCheck {
     }
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
 
         double cps = getCps();
-        double kurtosis = Statistics.getKurtosis(samples);
-        double variation = Statistics.getVariation(samples);
-        double entropy = Statistics.getEntropy(samples);
-        double mad = Statistics.getMAD(samples);
+        double kurtosis = Statistics.getKurtosis(sample);
+        double variation = Statistics.getVariation(sample);
+        double entropy = Statistics.getEntropy(sample);
+        double mad = Statistics.getMAD(sample);
 
-        List<Integer> n = new ArrayList<>(samples);
+        List<Integer> n = new ArrayList<>(sample);
         long clickPattern = IntStream.range(0, n.size() - 1)
                 .filter(i -> n.get(i) == 0 && n.get(i + 1) > 2)
                 .count();

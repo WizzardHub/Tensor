@@ -25,10 +25,10 @@ public class AutoClickerC extends SwingCheck {
     ArrayDeque<Double> variations = new ArrayDeque<>();
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
 
         double cps = getCps();
-        double variation = Statistics.getVariation(samples);
+        double variation = Statistics.getVariation(sample);
 
         if (variations.add(variation) && variations.size() == 5) {
 

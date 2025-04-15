@@ -24,15 +24,15 @@ public class AutoClickerG extends SwingCheck {
     }
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
 
         double cps = getCps();
-        double kurtosis = Statistics.getKurtosis(samples);
-        double skewness = Statistics.getSkewness(samples);
-        double bds = Statistics.getBDS(samples);
+        double kurtosis = Statistics.getKurtosis(sample);
+        double skewness = Statistics.getSkewness(sample);
+        double bds = Statistics.getBDS(sample);
 
-        List<Integer> outliers = Statistics.getOutliers(samples);
-        int[] distribution = Statistics.getDistribution(samples);
+        List<Integer> outliers = Statistics.getOutliers(sample);
+        int[] distribution = Statistics.getDistribution(sample);
 
         int outlierCount = outliers.size();
 

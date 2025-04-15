@@ -24,7 +24,7 @@ public class AutoClickerB extends SwingCheck {
     }
 
     @Override
-    protected void handle(ArrayDeque<Integer> samples) {
+    protected void handle(ArrayDeque<Integer> sample) {
         double cps = getCps();
 
         DebugContainer data = DebugContainer.builder()
