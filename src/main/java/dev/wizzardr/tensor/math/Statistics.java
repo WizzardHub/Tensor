@@ -1,7 +1,6 @@
 package dev.wizzardr.tensor.math;
 
 import lombok.experimental.UtilityClass;
-
 import java.util.*;
 
 @UtilityClass
@@ -36,6 +35,7 @@ public class Statistics {
     public <T extends Number> double getAverage(ArrayDeque<T> data) {
         double sum = 0.0;
         int size = data.size();
+        if (size == 0) return 0.0; // Handle empty data
         for (T value : data) {
             sum += value.doubleValue();
         }
@@ -43,7 +43,7 @@ public class Statistics {
     }
 
     /**
-     * Calculate the cps of the data.  CPS is calculated as 20 / average.
+     * Calculate the cps of the data. CPS is calculated as 20 / average.
      *
      * @param data The data to calculate the CPS from.
      * @return The CPS of the data.
@@ -62,32 +62,27 @@ public class Statistics {
      * @return An array of integers representing the distribution of the numbers in the collection.
      */
     public <T extends Number> int[] getDistribution(ArrayDeque<T> data) {
-
         int size = 10;
         int[] counter = new int[size + 1];
-
         for (Number i : data) {
-            if (i.intValue() <= size)
+            if (i.intValue() <= size) {
                 counter[i.intValue()]++;
+            }
         }
-
         return counter;
     }
 
     /**
-     * Finds outliers in the data.  An outlier is defined as any number greater than 3.
+     * Finds outliers in the data. An outlier is defined as any number greater than 3.
      *
      * @param data The data to check for outliers.
      * @return A list of integers that are outliers in the data.
      */
     public <T extends Number> List<Integer> getOutliers(ArrayDeque<T> data) {
-        List<Integer> outliers = new ArrayList<>();
-        for (T value : data) {
-            if (value.intValue() > 3) {
-                outliers.add(value.intValue());
-            }
-        }
-        return outliers;
+        return data.stream()
+                .map(Number::intValue)
+                .filter(i -> i > 3)
+                .toList();
     }
 
     /**
@@ -164,7 +159,6 @@ public class Statistics {
 
     /**
      * Calculate the Shannon entropy of the data based on the frequency of each value.
-     * This method behaves the same as the first getEntropy function provided.
      *
      * @param data The data to calculate the entropy from.
      * @return The Shannon entropy of the data in bits.
@@ -190,14 +184,8 @@ public class Statistics {
      * @return The Gini coefficient of the data.
      */
     public <T extends Number> double getGini(ArrayDeque<T> data) {
-        double[] sorted = new double[data.size()];
-        int index = 0;
-        double sum = 0.0;
-        for (T value : data) {
-            sorted[index++] = value.doubleValue();
-            sum += sorted[index - 1];
-        }
-        java.util.Arrays.sort(sorted);
+        double[] sorted = data.stream().mapToDouble(Number::doubleValue).sorted().toArray();
+        double sum = Arrays.stream(sorted).sum();
         double giniSum = 0.0;
         for (int i = 0; i < sorted.length; i++) {
             giniSum += sorted[i] * (sorted.length - i);
@@ -213,22 +201,16 @@ public class Statistics {
      * @return The recurrence rate of the data.
      */
     public <T extends Number> double getRecurrenceRate(ArrayDeque<T> data, double epsilon) {
-        int size = data.size();
+        double[] values = data.stream().mapToDouble(Number::doubleValue).toArray();
+        int size = values.length;
         int count = 0;
-        double[] values = new double[size];
-        int i = 0;
-        for (T value : data) {
-            values[i++] = value.doubleValue();
-        }
-
-        for (i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             for (int j = i + 1; j < size; j++) {
                 if (Math.abs(values[i] - values[j]) <= epsilon) {
                     count++;
                 }
             }
         }
-
         return (double) count / (size * (size - 1.0) / 2.0);
     }
 
@@ -239,11 +221,7 @@ public class Statistics {
      * @return The number of unique values in the data.
      */
     public <T extends Number> int getModifCount(ArrayDeque<T> data) {
-        HashSet<Double> uniqueValues = new java.util.HashSet<>();
-        for (T value : data) {
-            uniqueValues.add(value.doubleValue());
-        }
-        return uniqueValues.size();
+        return (int) data.stream().mapToDouble(Number::doubleValue).distinct().count();
     }
 
     /**
@@ -265,26 +243,22 @@ public class Statistics {
 
     /**
      * Calculate the mean absolute difference between consecutive elements in the data.
-     * This measure quantifies the sequential volatility of the data.
      *
      * @param data The data to calculate the mean absolute difference from.
      * @return The mean absolute difference of the data.
      */
     public <T extends Number> double getMAD(ArrayDeque<T> data) {
         if (data.size() <= 1) return 0.0;
-
         Iterator<T> iterator = data.iterator();
         double prev = iterator.next().doubleValue();
         double sum = 0.0;
         int count = 0;
-
         while (iterator.hasNext()) {
             double curr = iterator.next().doubleValue();
             sum += Math.abs(curr - prev);
             prev = curr;
             count++;
         }
-
         return sum / count;
     }
 
@@ -303,6 +277,7 @@ public class Statistics {
     /**
      * Count the number of elements in the data that have an integer value of 0.
      *
+     * @param data The data to count double clicks from.
      * @return The count of such elements.
      */
     public <T extends Number> int getDoubleClicks(ArrayDeque<T> data) {
