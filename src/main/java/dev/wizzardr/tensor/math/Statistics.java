@@ -8,6 +8,26 @@ import java.util.*;
 public class Statistics {
 
     /**
+     * Calculate the minimum value in the data.
+     *
+     * @param data The data to calculate the minimum value from.
+     * @return The minimum value of the data.
+     */
+    public <T extends Number & Comparable<T>> T getMin(ArrayDeque<T> data) {
+        return Collections.min(data);
+    }
+
+    /**
+     * Calculate the maximum value in the data.
+     *
+     * @param data The data to calculate the maximum value from.
+     * @return The maximum value of the data.
+     */
+    public <T extends Number & Comparable<T>> T getMax(ArrayDeque<T> data) {
+        return Collections.max(data);
+    }
+
+    /**
      * Calculate the mean (average) of the data.
      *
      * @param data The data to calculate the mean from.
@@ -189,17 +209,27 @@ public class Statistics {
      * Calculate the recurrence rate of the data.
      *
      * @param data The data to calculate the recurrence rate from.
+     * @param epsilon The threshold for determining recurrence.
      * @return The recurrence rate of the data.
      */
-    public <T extends Number> double getRecurrenceRate(ArrayDeque<T> data) {
-        double mean = getAverage(data);
+    public <T extends Number> double getRecurrenceRate(ArrayDeque<T> data, double epsilon) {
+        int size = data.size();
         int count = 0;
+        double[] values = new double[size];
+        int i = 0;
         for (T value : data) {
-            if (value.doubleValue() == mean) {
-                count++;
+            values[i++] = value.doubleValue();
+        }
+
+        for (i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (Math.abs(values[i] - values[j]) <= epsilon) {
+                    count++;
+                }
             }
         }
-        return (double) count / data.size();
+
+        return (double) count / (size * (size - 1.0) / 2.0);
     }
 
     /**
@@ -258,6 +288,23 @@ public class Statistics {
         return sum / count;
     }
 
+    /**
+     * Calculate the oscillation of the data, which is defined as the difference between the maximum and minimum values.
+     *
+     * @param data The data to calculate the oscillation from.
+     * @return The oscillation of the data.
+     */
+    public <T extends Number & Comparable<T>> int getOscillation(ArrayDeque<T> data) {
+        T min = getMin(data);
+        T max = getMax(data);
+        return max.intValue() - min.intValue();
+    }
+
+    /**
+     * Count the number of elements in the data that have an integer value of 0.
+     *
+     * @return The count of such elements.
+     */
     public <T extends Number> int getDoubleClicks(ArrayDeque<T> data) {
         return (int) data.stream().filter(n -> n.intValue() == 0).count();
     }
