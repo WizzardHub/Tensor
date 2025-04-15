@@ -32,6 +32,8 @@ public abstract class SwingCheck {
         this.name = swingCheckData.getName();
         this.size = swingCheckData.getSize();
 
+        this.minVl = -1.0;
+
         /* Optional */
         this.delta = swingCheckData.isDelta();
         this.clearSamples = swingCheckData.isClearSample();
@@ -55,12 +57,29 @@ public abstract class SwingCheck {
             }
         }
 
+        // Decreasing the VL by 1.0 each 5000 clicks
+        // decreaseVl(size / 5000.0);
+
         lastTickDelay = tickDelay;
     }
 
+    /*
+    * Returns the raw sample from PlayerData
+    * generally used on a check that has delta sample transformation
+    */
+    protected ArrayDeque<Integer> getSample() {
+        return DequeUtil.resize(playerData.getSample(), size);
+    }
+
+    protected ArrayDeque<Integer> getSample(int size) {
+        return DequeUtil.resize(playerData.getSample(), size);
+    }
+
     protected void alert(DebugContainer data) {
-        if (++vl <= 0)
+
+        if (++vl <= 0) {
             return;
+        }
 
         ViolationService violationService = TensorAPI.INSTANCE.getViolationService();
         violationService.handleViolation(this, data);
@@ -74,6 +93,12 @@ public abstract class SwingCheck {
     protected void remove(int amount) {
         for (int i = 0; i < amount; i++) {
             sample.poll();
+        }
+    }
+
+    protected <T extends Number> void remove(ArrayDeque<T> data, int amount) {
+        for (int i = 0; i < amount; i++) {
+            data.poll();
         }
     }
 
