@@ -41,6 +41,7 @@ public class AutoClickerL extends SwingCheck {
             alert(data);
         }
 
+        debug(data);
         remove(100);
     }
 }
