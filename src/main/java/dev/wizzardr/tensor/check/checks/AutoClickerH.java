@@ -26,17 +26,16 @@ public class AutoClickerH extends SwingCheck {
 
         double cps = getCps();
         double bds = Statistics.getBDS(sample);
-        double kurtosis = Statistics.getKurtosis(sample);
 
         int oscillation = Statistics.getOscillation(sample);
 
         DebugContainer data = DebugContainer.builder()
-                .formatString("cps: %.2f, kurtosis: %.2f, bds: %.2f, oscillation: %s")
-                .values(cps, kurtosis, bds, oscillation)
+                .formatString("cps: %.2f, bds: %.2f, oscillation: %s")
+                .values(cps, bds, oscillation)
                 .build();
 
         boolean bdsCompliant = Math.abs(100.0 - bds) > 0.5;
-        if (cps > 8 && kurtosis <= 0.25 && oscillation <= 1 && bdsCompliant) {
+        if (cps > 8 && oscillation <= 1 && bdsCompliant) {
             alert(data);
         }
     }
