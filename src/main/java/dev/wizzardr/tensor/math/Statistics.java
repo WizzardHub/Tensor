@@ -268,10 +268,10 @@ public class Statistics {
      * @param data The data to calculate the oscillation from.
      * @return The oscillation of the data.
      */
-    public <T extends Number & Comparable<T>> int getOscillation(ArrayDeque<T> data) {
+    public <T extends Number & Comparable<T>> double getOscillation(ArrayDeque<T> data) {
         T min = getMin(data);
         T max = getMax(data);
-        return max.intValue() - min.intValue();
+        return max.doubleValue() - min.doubleValue();
     }
 
     /**

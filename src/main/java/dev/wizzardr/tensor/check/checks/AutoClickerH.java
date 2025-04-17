@@ -27,7 +27,7 @@ public class AutoClickerH extends SwingCheck {
         double cps = getCps();
         double bds = Statistics.getBDS(sample);
 
-        int oscillation = Statistics.getOscillation(sample);
+        double oscillation = Statistics.getOscillation(sample);
 
         DebugContainer data = DebugContainer.builder()
                 .formatString("cps: %.2f, bds: %.2f, oscillation: %s")
