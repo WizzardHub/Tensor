@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
 import java.util.Arrays;
 
 /*
-* Flags low cps auto clickers
+* Flags very randomized auto clickers with a specific pattern
 */
 public class AutoClickerN extends SwingCheck {
 
@@ -35,7 +35,7 @@ public class AutoClickerN extends SwingCheck {
         if (cps > 8 && kts.add(kurtosis) && kts.size() == 10) {
 
             double kurtosisSTD = Statistics.getStDev(kts);
-            double oscillation = Statistics.getOscillation(kts);
+            double kurtosisOSC = Statistics.getOscillation(kts);
 
             ArrayDeque<Integer> raw = getSample(500);
 
@@ -51,12 +51,12 @@ public class AutoClickerN extends SwingCheck {
                     && (double) distribution[1] / distribution[2] > 1.5
                     && distribution[3] + outliers > 20;
 
-            if (doubleClicks < 30 && outliers < 30 && oscillation > 5.0 && bds < 425 && correctSTD && correctDistribution) {
+            if (doubleClicks < 30 && outliers < 30 && kurtosisOSC > 5.0 && bds < 425 && correctSTD && correctDistribution) {
                 threshold();
 
                 DebugContainer data = DebugContainer.builder()
                         .formatString("cps: %.2f, oscillation: %.2f, stDev: %.2f, bds: %.2f, distribution: %s, threshold: %.2f")
-                        .values(cps, oscillation, kurtosisSTD, bds, Arrays.toString(distribution), this.threshold)
+                        .values(cps, kurtosisOSC, kurtosisSTD, bds, Arrays.toString(distribution), this.threshold)
                         .build();
 
                 if (this.threshold > 1.5) {
