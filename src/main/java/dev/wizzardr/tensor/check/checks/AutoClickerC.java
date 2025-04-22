@@ -35,13 +35,13 @@ public class AutoClickerC extends SwingCheck {
             double average = Statistics.getAverage(variations);
             double stDev = Statistics.getStDev(variations);
 
-            DebugContainer data = DebugContainer.builder()
-                    .formatString("cps: %.2f, average: %.2f, stDev: %s")
-                    .values(cps, average, stDev)
-                    .build();
-
             // Magic value used to determine a certain threshold
             double threshold = 0.0175 * (average + 0.15);
+
+            DebugContainer data = DebugContainer.builder()
+                    .formatString("cps: %.2f, average: %.2f, stDev: %s, threshold: %.2f")
+                    .values(cps, average, stDev, threshold)
+                    .build();
 
             if (cps > 8 && stDev < threshold) {
                 if (threshold() > 1.5) {
