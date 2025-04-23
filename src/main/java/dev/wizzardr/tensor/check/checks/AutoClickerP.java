@@ -9,19 +9,16 @@ import dev.wizzardr.tensor.math.Statistics;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 
-/*
- * It is almost impossible for human to consistently click 17+ cps
- * with no double clicks, especially when the clicks are being
- * rounded into ticks
- */
+
 public class AutoClickerP extends SwingCheck {
 
     public AutoClickerP(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker P")
-                .withSize(250)
+                .withSize(400)
                 .asDeltaCheck()
                 .excludeDoubleClicks()
+                .markAsExperimental()
                 .build());
     }
 
@@ -31,28 +28,33 @@ public class AutoClickerP extends SwingCheck {
         double cps = getCps();
         double stDev = Statistics.getStDev(sample);
 
-        ArrayDeque<Integer> raw = getSample(250);
+        ArrayDeque<Integer> raw = getSample(400);
 
-        double rawBDS = Statistics.getBDS(raw);
+        long doubleClicks = Statistics.getDoubleClicks(raw);
+        double rawRR = Statistics.getRecurrenceRate(raw, 1);
 
         int[] distribution = Statistics.getDistribution(sample);
 
         int difference = Math.abs(distribution[0] - distribution[1]);
         double deltaSTD = Math.abs(0.5 - stDev);
 
-        DebugContainer data = DebugContainer.builder()
-                .formatString("cps: %.2f, stDev: %.2f, bds: %.2f, difference: %s, distribution: %s")
-                .values(cps, stDev, rawBDS, difference, Arrays.toString(distribution))
-                .build();
+        boolean correctDistribution = Math.max(distribution[0], distribution[1]) > 150
+                && difference < 50;
 
-        boolean correctDistribution = Math.max(distribution[0], distribution[1]) > 100
-                && difference < 25;
+        if (cps > 8 && deltaSTD < 0.05 && doubleClicks < 40 && correctDistribution) {
 
-        if (cps > 8 && deltaSTD < 0.05 && correctDistribution) {
+            threshold(Math.pow(rawRR, 10));
+
+            DebugContainer data = DebugContainer.builder()
+                    .formatString("cps: %.2f, stDev: %.2f, recurrenceRate: %.2f, doubleClicks: %s, difference: %s, distribution: %s, threshold: %.2f")
+                    .values(cps, stDev, rawRR, doubleClicks, difference, Arrays.toString(distribution), threshold)
+                    .build();
+
             alert(data);
+        } else {
+            threshold(-0.1);
         }
 
-        debug(data);
-        remove(100);
+        remove(200);
     }
 }
