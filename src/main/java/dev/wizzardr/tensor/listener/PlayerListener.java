@@ -14,6 +14,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        TensorAPI.INSTANCE.getPlayerDataManager().add(event.getPlayer().getUniqueId());
+        TensorAPI.INSTANCE.getPlayerDataManager().remove(event.getPlayer().getUniqueId());
     }
 }
