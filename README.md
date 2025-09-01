@@ -32,6 +32,6 @@ Design, build, and rigorously test your anticheat checks with Tensor's powerful 
 
 * [x] Test the right click filter in real case scenarios
 * [x] Add complementary formulas to Statistics
-* [ ] Add autoclicker checks
+* [x] Add autoclicker checks
 * [ ] Provide a downloadable dataset of pre-recorded clicks
 * [ ] Complete README with detailed info about the checks, a showcase and some things I learned about detections
