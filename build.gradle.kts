@@ -28,7 +28,7 @@ dependencies {
     annotationProcessor("org.atteo.classindex:classindex:3.9")
 
     // PacketEvents 2.0
-    implementation("com.github.retrooper:packetevents-spigot:2.7.0")
+    implementation("com.github.retrooper:packetevents-spigot:2.9.5")
 
     // Lombok
     compileOnly("org.projectlombok:lombok:1.18.30")
