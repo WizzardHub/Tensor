@@ -1,5 +1,6 @@
 package dev.wizzardr.tensor.check.checks;
 
+import dev.wizzardr.tensor.check.CheckCategory;
 import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
@@ -18,6 +19,7 @@ public class AutoClickerN2 extends SwingCheck {
     public AutoClickerN2(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker N2")
+                .withCategory(CheckCategory.CLICK_PATTERN)
                 .asDeltaCheck()
                 .markAsExperimental()
                 .clearSamplesWhenFull()

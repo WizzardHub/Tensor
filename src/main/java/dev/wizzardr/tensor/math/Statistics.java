@@ -2,6 +2,8 @@ package dev.wizzardr.tensor.math;
 
 import lombok.experimental.UtilityClass;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class Statistics {
@@ -70,6 +72,19 @@ public class Statistics {
             }
         }
         return counter;
+    }
+
+    /**
+     * Returns the most frequent value (Mode) in the dataset.
+     */
+    public <T extends Number> int getMode(ArrayDeque<T> data) {
+        return data.stream()
+                .map(Number::intValue)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(0);
     }
 
     /**

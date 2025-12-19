@@ -1,5 +1,6 @@
 package dev.wizzardr.tensor.check.checks;
 
+import dev.wizzardr.tensor.check.CheckCategory;
 import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
@@ -17,6 +18,8 @@ public class AutoClickerB extends SwingCheck {
     public AutoClickerB(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker B")
+                .withDisplayName("CPS Limit")
+                .withCategory(CheckCategory.CPS_LIMIT)
                 .withSize(100)
                 .clearSamplesWhenFull()
                 .excludeDoubleClicks()

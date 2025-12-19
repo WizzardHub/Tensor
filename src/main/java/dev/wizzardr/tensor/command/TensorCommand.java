@@ -158,9 +158,7 @@ public class TensorCommand extends TensorBaseCommand {
     @Description("Replays all recordings in a specified folder and its subfolders.")
     @Syntax("<folderPath>")
     public void onReplayAll(CommandSender sender, String folderPath) {
-        Path root = Path.of(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
-                "replays");
-
+        Path root = Path.of(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(), "replays");
         Path path = root.resolve(folderPath);
 
         if (!Files.exists(path) || !Files.isDirectory(path)) {
@@ -168,28 +166,50 @@ public class TensorCommand extends TensorBaseCommand {
             return;
         }
 
-        try (var filesStream = Files.walk(path)) {
-            var recordFiles = filesStream
-                    .filter(Files::isRegularFile)
-                    .filter(file -> file.toString().endsWith(".txt"))
-                    .toList();
+        EXECUTOR_SERVICE.submit(() -> {
+            try (var filesStream = Files.walk(path)) {
+                var recordFiles = filesStream
+                        .filter(Files::isRegularFile)
+                        .filter(file -> file.toString().endsWith(".txt"))
+                        .toList();
 
-            if (recordFiles.isEmpty()) {
-                sender.sendMessage(String.format("%s%sNo recordings found in %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, folderPath));
-                return;
+                if (recordFiles.isEmpty()) {
+                    sender.sendMessage(String.format("%s%sNo recordings found in %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, folderPath));
+                    return;
+                }
+
+                sender.sendMessage(String.format("%sReplaying %s%d %srecordings...", Tensor.PREFIX, ChatColor.YELLOW, recordFiles.size(), ChatColor.GRAY));
+
+                for (var filePath : recordFiles) {
+                    String recordName = filePath.getFileName().toString().replace(".txt", "");
+
+                    processReplayInternal(sender, filePath, recordName);
+                }
+
+                sender.sendMessage(Tensor.PREFIX + ChatColor.GREEN + "All replays completed!");
+
+            } catch (IOException e) {
+                sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    private void processReplayInternal(CommandSender sender, Path path, String name) {
+        try {
+            PlayerData replayData = new PlayerData();
+            replayData.setRecordData(new TensorRecordData(false, name));
+
+            List<Integer> clicks;
+            try (Stream<String> lines = Files.lines(path)) {
+                clicks = lines.map(Integer::parseInt).toList();
             }
 
-            sender.sendMessage(String.format("%sReplaying %s%d %srecordings...", Tensor.PREFIX, ChatColor.YELLOW, recordFiles.size(), ChatColor.GRAY));
-
-            for (var filePath : recordFiles) {
-                EXECUTOR_SERVICE.submit(() -> {
-                    String relativePath = root.relativize(filePath).toString().replace(".txt", "");
-                    onReplay(sender, relativePath);
-                });
+            for (Integer clickDelay : clicks) {
+                replayData.handleClick(clickDelay);
             }
-        } catch (IOException e) {
-            sender.sendMessage(String.format("%s%sError replaying recordings: %s%s", Tensor.PREFIX, ChatColor.RED, ChatColor.WHITE, e.getMessage()));
-            Bukkit.getLogger().severe("Error replaying recordings: " + e.getMessage());
+
+        } catch (Exception e) {
+            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Failed to process: " + name);
         }
     }
 }

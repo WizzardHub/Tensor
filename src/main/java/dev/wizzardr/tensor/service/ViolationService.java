@@ -5,115 +5,120 @@ import dev.wizzardr.tensor.TensorAPI;
 import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.data.PlayerData;
-import io.github.retrooper.packetevents.adventure.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
 public class ViolationService {
 
-    private static final String VIOLATION_ALERT_FORMAT =
-            Tensor.PREFIX +
-            ChatColor.GRAY + "%s" +
-            ChatColor.WHITE + " is clicking suspiciously " +
-            ChatColor.RED + "x%d";
+    private static final String ALERTS_PERMISSION = "tensor.alerts";
 
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    private final ExecutorService ioExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread thread = new Thread(r, "tensor-io-pool");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     public void handleViolation(SwingCheck check, DebugContainer data) {
         PlayerData playerData = check.getPlayerData();
         Player bukkitPlayer = playerData.getPlayer();
 
-        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "Recorder";
-        String checkName = check.getName();
-        String checkInfo = data.getFormattedOutput();
+        String name = (bukkitPlayer != null) ? bukkitPlayer.getName() :
+                (playerData.getRecordData().getName() != null ?
+                        ChatColor.YELLOW + "[Replay] " + ChatColor.WHITE + playerData.getRecordData().getName() : "Replay");
 
         int violationLevel = ++playerData.vl;
 
-        if (check.isExperimental()) {
-            checkName += "*";
-        }
-
-        String alertMessageString = String.format(
-                VIOLATION_ALERT_FORMAT,
-                playerName,
-                violationLevel
-        );
-
         if (bukkitPlayer == null) {
-            EXECUTOR_SERVICE.submit(() -> {
-                try {
-                    Path logFile = Paths.get(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(),
-                            "logs", String.format("%s-%s.txt", playerData.getRecordData().getName(), check.getName().strip()));
-                    Files.createDirectories(logFile.getParent());
-                    Files.write(logFile,
-                            ChatColor.stripColor(data.getFormattedOutputSingle() + "\n").getBytes(),
-                            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-                } catch (Exception e) {
-                    TensorAPI.INSTANCE.getPlugin()
-                            .getLogger()
-                            .log(Level.SEVERE, e.toString());
-                }
-            });
+            logViolationToFile(playerData, check.getName(), data.getFormattedOutputSingle());
         }
 
-        String hoverTextString = ChatColor.AQUA + checkName + "'s data\n\n" + ChatColor.WHITE + checkInfo;
+        Component alert = createAlertComponent(name, check, violationLevel, data.getFormattedOutput());
 
-        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacySection();
-
-        Component mainComponent = serializer.deserialize(alertMessageString);
-        Component hoverComponent = serializer.deserialize(hoverTextString);
-
-        Component component = mainComponent.hoverEvent(HoverEvent.showText(hoverComponent));
-
-        Bukkit.getServer().getOnlinePlayers().stream()
-                .filter(p -> p.hasPermission("tensor.alerts"))
-                .forEach(p -> {
-                    Audience playerAudience = TensorAPI.INSTANCE.getBukkitAudiences().player(p);
-                    playerAudience.sendMessage(component);
-                });
+        broadcastToStaff(alert);
     }
 
-
     public void handleDebug(SwingCheck check, DebugContainer data) {
+        String checkName = check.getName().replace(" ", "");
+        String playerName = check.getPlayerData().getPlayer() != null
+                ? check.getPlayerData().getPlayer().getName()
+                : (check.getPlayerData().getRecordData().getName() != null ? check.getPlayerData().getRecordData().getName() : "Replay");
 
-        PlayerData playerData = check.getPlayerData();
-        Player bukkitPlayer = playerData.getPlayer();
+        String info = data.getFormattedOutputSingle();
 
-        String checkName = check.getName().replaceAll("\\s","");
-        String playerName = (bukkitPlayer != null) ? bukkitPlayer.getName() : "Recorder";
+        ioExecutor.execute(() -> {
+            Component debugMsg = createDebugComponent(checkName, playerName, info);
 
-        EXECUTOR_SERVICE.submit(() -> {
-            AtomicReference<String> checkInfo = new AtomicReference<>();
-            TensorAPI.INSTANCE.getPlugin().getServer().getOnlinePlayers().stream()
-                    .map(p -> TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId()))
+            Bukkit.getOnlinePlayers().stream()
                     .filter(p -> {
-                        for (Map.Entry<String, List<String>> entry : p.getDebugs().entrySet()) {
-                            String player = entry.getKey();
-                            List<String> checks = entry.getValue();
-                            checkInfo.set(data.getFormattedOutputSingle());
-                            return (playerName.equals(player) || player.equals("*")) && checks.contains(checkName);
-                        }
-
-                        return false;
+                        PlayerData d = TensorAPI.INSTANCE.getPlayerDataManager().getPlayerData(p.getUniqueId());
+                        return d != null && isDebugging(d, playerName, checkName);
                     })
-                    .forEach(p -> p.getPlayer().sendMessage(
-                    String.format("%s[%s]%s (%s) %s", ChatColor.RED, checkName,
-                            ChatColor.GRAY, playerName, checkInfo.get())));
+                    .forEach(p -> TensorAPI.INSTANCE.getBukkitAudiences().player(p).sendMessage(debugMsg));
         });
+    }
+
+    private Component createAlertComponent(String name, SwingCheck check, int vl, String debug) {
+        return Component.text()
+                .append(Component.text(Tensor.PREFIX))
+                .append(Component.text(name, NamedTextColor.WHITE))
+                .append(Component.space())
+                .append(Component.text(check.getCategory().getDisplayName(), NamedTextColor.AQUA))
+                .append(Component.space())
+                .append(Component.text("x" + vl, NamedTextColor.RED))
+                .hoverEvent(Component.text(debug, NamedTextColor.WHITE))
+                .build();
+    }
+
+    private Component createDebugComponent(String check, String player, String info) {
+        return Component.text()
+                .append(Component.text("[" + check + "]", NamedTextColor.RED))
+                .append(Component.space())
+                .append(Component.text("(" + player + ")", NamedTextColor.GRAY))
+                .append(Component.space())
+                .append(Component.text(info))
+                .build();
+    }
+
+    private void broadcastToStaff(Component message) {
+        TensorAPI.INSTANCE.getBukkitAudiences()
+                .filter(p -> p.hasPermission(ALERTS_PERMISSION) && p.isOp())
+                .sendMessage(message);
+
+    }
+
+    private void logViolationToFile(PlayerData data, String checkName, String content) {
+        ioExecutor.execute(() -> {
+            try {
+                String recordName = data.getRecordData().getName() != null ? data.getRecordData().getName() : "unknown";
+
+                Path file = TensorAPI.INSTANCE.getPlugin().getDataFolder().toPath()
+                        .resolve("logs")
+                        .resolve(String.format("%s-%s.txt", recordName, checkName.trim()));
+
+                Files.createDirectories(file.getParent());
+                Files.writeString(file, ChatColor.stripColor(content) + System.lineSeparator(),
+                        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+
+            } catch (Exception e) {
+                TensorAPI.INSTANCE.getPlugin().getLogger().log(Level.SEVERE, "IO Error writing logs", e);
+            }
+        });
+    }
+
+    private boolean isDebugging(PlayerData data, String target, String check) {
+        return data.getDebugs().entrySet().stream()
+                .anyMatch(entry -> (entry.getKey().equals(target) || entry.getKey().equals("*"))
+                        && entry.getValue().contains(check));
     }
 }

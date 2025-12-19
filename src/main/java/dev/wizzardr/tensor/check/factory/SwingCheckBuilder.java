@@ -1,10 +1,16 @@
 package dev.wizzardr.tensor.check.factory;
 
+import dev.wizzardr.tensor.check.CheckCategory;
+
 import java.util.Objects;
 
 public class SwingCheckBuilder {
 
     private String name;
+    private String displayName;
+
+    private CheckCategory category;
+
     private int size = Integer.MIN_VALUE;
 
     private boolean delta = false;
@@ -20,6 +26,16 @@ public class SwingCheckBuilder {
 
     public SwingCheckBuilder withName(String name) {
         this.name = Objects.requireNonNull(name, "Name cannot be null");
+        return this;
+    }
+
+    public SwingCheckBuilder withDisplayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    public SwingCheckBuilder withCategory(CheckCategory category) {
+        this.category = Objects.requireNonNull(category, "Category cannot be null");
         return this;
     }
 
@@ -52,20 +68,23 @@ public class SwingCheckBuilder {
     }
 
     public SwingCheckData build() {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.isBlank()) {
             throw new IllegalStateException("Check name must be set using withName()");
         }
+
         if (size <= 0) {
             throw new IllegalStateException("Sample size must be set to a positive value using withSize()");
         }
 
         return new SwingCheckData(
-                this.name,
-                this.size,
-                this.delta,
-                this.clearSample,
-                this.includeDoubleClicks,
-                this.experimental
+                name,
+                displayName,
+                category,
+                size,
+                delta,
+                clearSample,
+                includeDoubleClicks,
+                experimental
         );
     }
 }

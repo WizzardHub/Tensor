@@ -1,14 +1,22 @@
 package dev.wizzardr.tensor.check.factory;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import dev.wizzardr.tensor.check.CheckCategory;
 
-@Getter
-@AllArgsConstructor
-public class SwingCheckData {
+public record SwingCheckData(
 
-    private String name;
-    private int size;
-    private boolean delta, clearSample, includeDoubleClicks, experimental;
+        String name,
+        String displayName,
 
+        CheckCategory category,
+
+        int size,
+
+        boolean delta,
+        boolean clearSample,
+        boolean includeDoubleClicks,
+        boolean experimental) {
+
+    public String getEffectiveDisplayName() {
+        return displayName != null ? displayName : name;
+    }
 }

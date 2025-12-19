@@ -1,5 +1,6 @@
 package dev.wizzardr.tensor.check.checks;
 
+import dev.wizzardr.tensor.check.CheckCategory;
 import dev.wizzardr.tensor.check.data.DebugContainer;
 import dev.wizzardr.tensor.check.factory.SwingCheck;
 import dev.wizzardr.tensor.check.factory.SwingCheckBuilder;
@@ -17,6 +18,7 @@ public class AutoClickerJ extends SwingCheck {
     public AutoClickerJ(PlayerData playerData) {
         super(playerData, SwingCheckBuilder.create()
                 .withName("Auto Clicker J")
+                .withCategory(CheckCategory.CLICK_PATTERN)
                 .withSize(50)
                 .clearSamplesWhenFull()
                 .build());
