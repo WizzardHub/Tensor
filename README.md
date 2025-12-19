@@ -28,6 +28,10 @@ Design, build, and rigorously test your anticheat checks with Tensor's powerful 
 
 ![image](https://github.com/user-attachments/assets/4df6b439-8b47-47c4-8f21-3c6139c2a51c)
 
+`/tensor recordstats ` - Displays all the recorded datasets (sample size, avg cps)
+<img width="447" height="130" alt="image" src="https://github.com/user-attachments/assets/bcdece20-3c95-4291-85e8-379d235313c4" />
+
+
 ### Todo
 
 * [x] Test the right click filter in real case scenarios
