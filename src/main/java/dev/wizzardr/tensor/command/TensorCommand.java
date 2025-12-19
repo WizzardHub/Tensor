@@ -154,6 +154,66 @@ public class TensorCommand extends TensorBaseCommand {
         }
     }
 
+    @Subcommand("recordstats")
+    @Description("Displays all the recorded datasets (sample size, avg cps).")
+    public void onRecordStats(CommandSender sender) {
+        Path root = Path.of(TensorAPI.INSTANCE.getPlugin().getDataFolder().toString(), "replays");
+
+        if (!Files.exists(root) || !Files.isDirectory(root)) {
+            sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Replays directory not found.");
+            return;
+        }
+
+        ChatColor AQUA = ChatColor.AQUA;
+        ChatColor GRAY = ChatColor.GRAY;
+        ChatColor YELLOW = ChatColor.YELLOW;
+        ChatColor GREEN = ChatColor.GREEN;
+
+        sender.sendMessage(Tensor.PREFIX + "Recorded Statistics:");
+
+        EXECUTOR_SERVICE.submit(() -> {
+            try (Stream<Path> paths = Files.walk(root)) {
+                paths.filter(Files::isRegularFile)
+                        .filter(path -> path.toString().endsWith(".txt"))
+                        .forEach(path -> {
+                            try {
+                                List<String> lines = Files.readAllLines(path);
+                                if (lines.isEmpty()) return;
+
+                                List<Double> tickDelays = lines.stream()
+                                        .map(Double::parseDouble)
+                                        .filter(d -> d > 0 && d < 20)
+                                        .toList();
+
+                                if (tickDelays.isEmpty()) return;
+
+                                double avgTickDelay = tickDelays.stream()
+                                        .mapToDouble(Double::doubleValue)
+                                        .average()
+                                        .orElse(0.0);
+
+                                double avgCps = (avgTickDelay > 0) ? (20.0 / avgTickDelay) : 0.0;
+                                String fileName = path.getFileName().toString().replace(".txt", "");
+
+                                sender.sendMessage(String.format("%s- %s%s %s(%s%d %ssamples, %s%.2f %scps%s)",
+                                        GRAY,
+                                        AQUA, fileName,
+                                        GRAY,
+                                        GREEN, lines.size(),
+                                        GRAY,
+                                        YELLOW, avgCps,
+                                        GRAY,
+                                        GRAY
+                                ));
+
+                            } catch (IOException | NumberFormatException ignored) {}
+                        });
+            } catch (IOException e) {
+                sender.sendMessage(Tensor.PREFIX + ChatColor.RED + "Error: " + e.getMessage());
+            }
+        });
+    }
+
     @Subcommand("replayall")
     @Description("Replays all recordings in a specified folder and its subfolders.")
     @Syntax("<folderPath>")
