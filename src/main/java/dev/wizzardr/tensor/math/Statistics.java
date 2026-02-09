@@ -101,6 +101,42 @@ public class Statistics {
     }
 
     /**
+     * Calculate the average absolute difference between the data and the mean.
+     * This is more robust to outliers than Standard Deviation.
+     */
+    public <T extends Number> double getMeanAbsoluteDeviation(ArrayDeque<T> data) {
+        double mean = getAverage(data);
+        double sum = 0;
+        for (T value : data) {
+            sum += Math.abs(value.doubleValue() - mean);
+        }
+        return sum / data.size();
+    }
+
+    /**
+     * Calculates the "Zero-Frequency" ratio.
+     * Macros often use 0-tick delays to compensate for timing; humans rarely do this consistently.
+     */
+    public <T extends Number> double getZeroRatio(ArrayDeque<T> data) {
+        long zeros = data.stream().filter(n -> n.intValue() == 0).count();
+        return (double) zeros / data.size();
+    }
+
+    /**
+     * Measures the "clumping" of values.
+     * A high value suggests that clicks are centering around a few specific integers.
+     */
+    public <T extends Number> double getConcentration(ArrayDeque<T> data) {
+        int[] dist = getDistribution(data);
+        double sumSq = 0;
+        for (int count : dist) {
+            double p = (double) count / data.size();
+            sumSq += p * p;
+        }
+        return sumSq;
+    }
+
+    /**
      * Calculate the variance of the data.
      *
      * @param data The data to calculate the variance from.

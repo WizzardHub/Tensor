@@ -24,8 +24,8 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
 
     // Class Index
-    implementation("org.atteo.classindex:classindex:3.9")
-    annotationProcessor("org.atteo.classindex:classindex:3.9")
+    implementation("org.atteo.classindex:classindex:3.13")
+    annotationProcessor("org.atteo.classindex:classindex:3.13")
 
     // PacketEvents 2.0
     implementation("com.github.retrooper:packetevents-spigot:2.9.5")
